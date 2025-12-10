@@ -1,0 +1,225 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
+import BreadcrumbSchema from "../components/BreadcrumbSchema.astro";
+import { getPages, type FAQItem } from "../library/microcms";
+
+// Fetch FAQs from Pages API
+let faqs: FAQItem[] = [];
+try {
+    const pages = await getPages();
+    faqs = pages.faqs || [];
+} catch (error) {
+    console.error("Error fetching FAQs:", error);
+}
+
+// SEO
+const seo = {
+    title: "よくあるご質問 | AIU Cedar Society",
+    description:
+        "AIU Cedar Societyに関するよくあるご質問をまとめました。団体について、イベントについて、参加方法などをご確認いただけます。",
+    keywords: "AIU Cedar Society,FAQ,よくあるご質問,Q&A",
+};
+
+const breadcrumbItems = [
+    { label: "ホーム", href: "/" },
+    { label: "よくあるご質問" },
+];
+---
+
+<Layout seo={seo}>
+    <BreadcrumbSchema items={breadcrumbItems} />
+    <div class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+        <div
+            class="container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-12 md:pb-20 max-w-4xl"
+        >
+            <Breadcrumb items={breadcrumbItems} />
+            {/* Back Button */}
+            <a
+                href="/"
+                class="inline-flex items-center text-gray-500 hover:text-[#006837] mb-8 md:mb-12 transition-colors group text-sm font-medium min-h-[44px]"
+            >
+                <svg
+                    class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"></path>
+                </svg>
+                トップに戻る
+            </a>
+
+            {/* Hero Section */}
+            <div class="relative mb-12 md:mb-16">
+                <div class="relative mb-6">
+                    <div class="absolute top-0 left-0 w-px h-full bg-[#006837]">
+                    </div>
+                    <h1
+                        class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight pl-6"
+                    >
+                        よくある<span class="text-[#006837]">ご質問</span>
+                    </h1>
+                </div>
+                <p
+                    class="text-lg md:text-xl text-gray-600 leading-relaxed pl-6 max-w-2xl"
+                >
+                    AIU Cedar Societyに関するよくあるご質問をまとめました
+                </p>
+            </div>
+
+            {/* FAQ Accordion */}
+            <div class="space-y-4">
+                {
+                    faqs.length > 0 ? (
+                        faqs.map((faq, index) => (
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
+                                <button
+                                    class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                    aria-expanded="false"
+                                    data-index={index}
+                                >
+                                    <div class="flex items-start gap-4">
+                                        <span class="flex-shrink-0 w-8 h-8 bg-[#006837] bg-opacity-10 text-[#006837] rounded-full flex items-center justify-center font-bold text-sm">
+                                            Q
+                                        </span>
+                                        <span class="font-bold text-gray-900 text-left leading-relaxed">
+                                            {faq.question}
+                                        </span>
+                                    </div>
+                                    <svg
+                                        class="faq-icon w-5 h-5 text-gray-500 flex-shrink-0 ml-4 transition-transform duration-300"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+                                </button>
+                                <div
+                                    class="faq-content hidden px-6 pb-5"
+                                    data-content={index}
+                                >
+                                    <div class="flex items-start gap-4 pl-0">
+                                        <span class="flex-shrink-0 w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-sm">
+                                            A
+                                        </span>
+                                        <div
+                                            class="prose prose-sm max-w-none text-gray-700 leading-relaxed"
+                                            set:html={faq.answer}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                            <svg
+                                class="w-16 h-16 text-gray-300 mx-auto mb-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                            <p class="text-gray-500 text-lg">
+                                FAQは現在準備中です
+                            </p>
+                            <p class="text-gray-400 text-sm mt-2">
+                                近日中に公開予定です
+                            </p>
+                        </div>
+                    )
+                }
+            </div>
+
+            {/* Contact CTA */}
+            <div
+                class="mt-12 bg-[#006837] bg-opacity-5 rounded-lg p-6 md:p-8 border border-[#006837] border-opacity-20"
+            >
+                <h3 class="text-lg font-bold text-gray-900 mb-3">
+                    お探しの質問が見つかりませんか？
+                </h3>
+                <p class="text-gray-600 mb-4">
+                    その他のご質問やご不明な点がございましたら、お気軽にお問い合わせください。
+                </p>
+                <a
+                    href="/contact"
+                    class="inline-flex items-center gap-2 bg-[#006837] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#005028] transition-colors duration-300"
+                >
+                    お問い合わせ
+                    <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    // FAQ Accordion functionality
+    document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll(".faq-button");
+
+        buttons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const index = button.getAttribute("data-index");
+                const content = document.querySelector(
+                    `[data-content="${index}"]`,
+                );
+                const icon = button.querySelector(".faq-icon");
+                const isExpanded =
+                    button.getAttribute("aria-expanded") === "true";
+
+                button.setAttribute("aria-expanded", (!isExpanded).toString());
+                content?.classList.toggle("hidden");
+                icon?.classList.toggle("rotate-180");
+            });
+        });
+    });
+
+    // Re-init on page navigation (View Transitions)
+    document.addEventListener("astro:page-load", () => {
+        const buttons = document.querySelectorAll(".faq-button");
+
+        buttons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const index = button.getAttribute("data-index");
+                const content = document.querySelector(
+                    `[data-content="${index}"]`,
+                );
+                const icon = button.querySelector(".faq-icon");
+                const isExpanded =
+                    button.getAttribute("aria-expanded") === "true";
+
+                button.setAttribute("aria-expanded", (!isExpanded).toString());
+                content?.classList.toggle("hidden");
+                icon?.classList.toggle("rotate-180");
+            });
+        });
+    });
+</script>

@@ -22,12 +22,28 @@ export type LectureResponse = {
   contents: Lecture[];
 };
 
+// FAQ Item Type (for repeater field in Pages)
+export type FAQItem = {
+  question: string;
+  answer: string;
+};
+
+// Sponsor Item Type (for repeater field in Pages)
+export type SponsorItem = {
+  name: string;
+  logo?: MicroCMSImage;
+  url?: string;
+  description?: string;
+};
+
 // Pages Type Definition (Object format - singleton)
 export type Pages = {
   hero_title: string;
   hero_subtitle: string;
   about_content: string;
   history_content: string;
+  faqs?: FAQItem[];
+  sponsors?: SponsorItem[];
 };
 
 // Member Type Definition
@@ -133,4 +149,54 @@ export const getUpcomingEvents = async (queries?: MicroCMSQueries) => {
 // Helper functions for Media Coverage
 export const getMediaCoverage = async (queries?: MicroCMSQueries) => {
   return await client.get<MediaCoverageResponse>({ endpoint: "media_coverage", queries });
+};
+
+// FAQ Type Definition
+export type FAQ = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  revisedAt: string;
+  question: string;
+  answer: string;
+  category?: string;
+  order?: number;
+};
+
+export type FAQResponse = {
+  totalCount: number;
+  offset: number;
+  limit: number;
+  contents: FAQ[];
+};
+
+// Helper functions for FAQ
+export const getFAQs = async (queries?: MicroCMSQueries) => {
+  return await client.get<FAQResponse>({ endpoint: "faqs", queries });
+};
+
+// Sponsor Type Definition
+export type Sponsor = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  revisedAt: string;
+  name: string;
+  logo?: MicroCMSImage;
+  url?: string;
+  description?: string;
+};
+
+export type SponsorResponse = {
+  totalCount: number;
+  offset: number;
+  limit: number;
+  contents: Sponsor[];
+};
+
+// Helper functions for Sponsors
+export const getSponsors = async (queries?: MicroCMSQueries) => {
+  return await client.get<SponsorResponse>({ endpoint: "sponsors", queries });
 };
