@@ -1038,16 +1038,21 @@ const { seo = {} } = Astro.props;
         <script is:inline>
             // Splash Screen Controller
             (function () {
-                const splashShown = localStorage.getItem("splashShown");
                 const splash = document.getElementById("splash-screen");
+                const splashShown = sessionStorage.getItem("splashShown");
 
-                if (splashShown) {
-                    // Already shown before, hide immediately
+                // Check if this is a page reload
+                const navEntries = performance.getEntriesByType("navigation");
+                const isReload =
+                    navEntries.length > 0 && navEntries[0].type === "reload";
+
+                if (splashShown || isReload) {
+                    // Already shown in this session or page reload
                     if (splash) {
                         splash.style.display = "none";
                     }
                 } else {
-                    // Very first visit ever
+                    // First visit in this browser session
                     document.body.classList.add("splash-active");
 
                     // Hide splash after 3 seconds
@@ -1063,8 +1068,8 @@ const { seo = {} } = Astro.props;
                         }
                     }, 3000);
 
-                    // Mark as shown permanently
-                    localStorage.setItem("splashShown", "true");
+                    // Mark as shown for this session
+                    sessionStorage.setItem("splashShown", "true");
                 }
             })();
         </script>
