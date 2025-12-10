@@ -897,6 +897,178 @@ const { seo = {} } = Astro.props;
     <body
         class="bg-gray-50 text-[#333333] font-sans antialiased min-h-screen flex flex-col tracking-wide font-normal selection:bg-[#006837] selection:text-white relative"
     >
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="splash-screen">
+            <div class="splash-content">
+                <img
+                    src="/favicon.png"
+                    alt="AIU Cedar Society"
+                    class="splash-logo"
+                />
+                <div class="splash-text">AIU Cedar Society</div>
+            </div>
+        </div>
+
+        <style>
+            /* Splash Screen Styles */
+            .splash-screen {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+                opacity: 1;
+                visibility: visible;
+                transition:
+                    opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    visibility 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .splash-screen.hide {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            .splash-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                animation: fadeInUp 0.8s ease-out;
+                transition:
+                    transform 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.8s ease-out;
+            }
+
+            .splash-screen.hide .splash-content {
+                transform: scale(20);
+                opacity: 0;
+            }
+
+            .splash-logo {
+                width: 120px;
+                height: 120px;
+                border-radius: 24px;
+                box-shadow: 0 20px 60px rgba(0, 104, 55, 0.2);
+                animation: pulse-logo 2s ease-in-out infinite;
+                transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .splash-text {
+                margin-top: 24px;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #006837;
+                letter-spacing: 0.1em;
+                opacity: 0;
+                animation: fadeIn 0.5s ease-out 0.3s forwards;
+                transition: opacity 0.3s ease-out;
+            }
+
+            .splash-screen.hide .splash-text {
+                opacity: 0 !important;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes pulse-logo {
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.05);
+                }
+            }
+
+            /* Hide body scroll when splash is visible */
+            body.splash-active {
+                overflow: hidden;
+            }
+
+            /* Reduced motion support */
+            @media (prefers-reduced-motion: reduce) {
+                .splash-screen {
+                    transition:
+                        opacity 0.3s ease-out,
+                        visibility 0.3s ease-out;
+                }
+                .splash-content {
+                    animation: none;
+                    transition: none;
+                }
+                .splash-screen.hide .splash-content {
+                    transform: none;
+                }
+                .splash-logo {
+                    animation: none;
+                    transition: none;
+                }
+                .splash-text {
+                    animation: none;
+                    opacity: 1;
+                }
+            }
+        </style>
+
+        <script is:inline>
+            // Splash Screen Controller
+            (function () {
+                const splashShown = sessionStorage.getItem("splashShown");
+                const splash = document.getElementById("splash-screen");
+
+                if (splashShown) {
+                    // Already shown in this session, hide immediately
+                    if (splash) {
+                        splash.style.display = "none";
+                    }
+                } else {
+                    // First visit in this session
+                    document.body.classList.add("splash-active");
+
+                    // Hide splash after 3 seconds
+                    setTimeout(function () {
+                        if (splash) {
+                            splash.classList.add("hide");
+                            document.body.classList.remove("splash-active");
+
+                            // Remove from DOM after animation
+                            setTimeout(function () {
+                                splash.style.display = "none";
+                            }, 1500);
+                        }
+                    }, 3000);
+
+                    // Mark as shown for this session
+                    sessionStorage.setItem("splashShown", "true");
+                }
+            })();
+        </script>
+
         <!-- HEADER -->
         <header
             class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200"
