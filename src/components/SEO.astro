@@ -1,0 +1,65 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  article?: {
+    publishedTime?: string;
+    author?: string;
+  };
+}
+
+const {
+  title = 'AIU Cedar Society - 秋田とAIU生の可能性をつなぐ',
+  description = 'AIU Cedar Societyは、秋田国際教養大学の学生主導の公認団体です。著名なゲストを招いた講演会を通じて、学生と秋田社会をつなぎ、「出会い・学び・実践」のサイクルを創り出します。',
+  keywords = 'AIU Cedar Society,秋田国際教養大学,学生団体,講演会,AIU,秋田,イベント,キャリア支援,地域活性化',
+  ogImage = '/ogp-default.jpg',
+  ogType = 'website',
+  article,
+} = Astro.props;
+
+// サイト情報
+const siteUrl = Astro.site || 'https://aiu-cedar-society.vercel.app';
+const siteName = 'AIU Cedar Society';
+const currentUrl = new URL(Astro.url.pathname, siteUrl).href;
+
+// 画像の絶対URL
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : new URL(ogImage, siteUrl).href;
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+<link rel="canonical" href={currentUrl} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={currentUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content="ja_JP" />
+
+{article && ogType === 'article' && (
+  <>
+    {article.publishedTime && <meta property="article:published_time" content={article.publishedTime} />}
+    {article.author && <meta property="article:author" content={article.author} />}
+  </>
+)}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={currentUrl} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+<!-- Additional SEO -->
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="author" content={siteName} />

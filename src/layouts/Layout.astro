@@ -1,0 +1,1682 @@
+---
+import "../styles/global.css";
+import SEO from "../components/SEO.astro";
+import SchemaOrganization from "../components/SchemaOrganization.astro";
+import { ViewTransitions } from "astro:transitions";
+
+interface Props {
+    seo?: {
+        title?: string;
+        description?: string;
+        keywords?: string;
+        ogImage?: string;
+        ogType?: "website" | "article";
+        article?: {
+            publishedTime?: string;
+            author?: string;
+        };
+    };
+}
+
+const { seo = {} } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+
+        <!-- Favicons -->
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+
+        <meta name="generator" content={Astro.generator} />
+
+        <!-- SEO Meta Tags -->
+        <SEO {...seo} />
+
+        <!-- View Transitions for smooth page navigation -->
+        <ViewTransitions />
+
+        <!-- DNS Prefetch for faster resolution -->
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://images.microcms-assets.io" />
+        <link rel="dns-prefetch" href="https://unpkg.com" />
+
+        <!-- Preconnect for critical origins (images are priority) -->
+        <link
+            rel="preconnect"
+            href="https://images.microcms-assets.io"
+            crossorigin
+        />
+
+        <!-- Critical CSS Inline for instant render -->
+        <style>
+            /* Critical above-the-fold styles */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    "Helvetica Neue", Arial, sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            body {
+                background-color: #f9fafb;
+                color: #333333;
+                min-height: 100vh;
+                line-height: 1.75;
+            }
+        </style>
+
+        <!-- NProgress Styles (inline for fast loading) -->
+        <style>
+            /* NProgress Loading Bar */
+            #nprogress {
+                pointer-events: none;
+            }
+            #nprogress .bar {
+                background: #006837;
+                position: fixed;
+                z-index: 9999;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 3px;
+            }
+            #nprogress .peg {
+                display: block;
+                position: absolute;
+                right: 0px;
+                width: 100px;
+                height: 100%;
+                box-shadow:
+                    0 0 10px #006837,
+                    0 0 5px #006837;
+                opacity: 1;
+                transform: rotate(3deg) translate(0px, -4px);
+            }
+            #nprogress .spinner {
+                display: block;
+                position: fixed;
+                z-index: 9999;
+                top: 15px;
+                right: 15px;
+            }
+            #nprogress .spinner-icon {
+                width: 18px;
+                height: 18px;
+                box-sizing: border-box;
+                border: solid 2px transparent;
+                border-top-color: #006837;
+                border-left-color: #006837;
+                border-radius: 50%;
+                animation: nprogress-spinner 400ms linear infinite;
+            }
+            .nprogress-custom-parent {
+                overflow: hidden;
+                position: relative;
+            }
+            .nprogress-custom-parent #nprogress .spinner,
+            .nprogress-custom-parent #nprogress .bar {
+                position: absolute;
+            }
+            @keyframes nprogress-spinner {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+
+        <!-- NProgress Script (load early for page transitions) -->
+        <script is:inline>
+            // Import NProgress from CDN for minimal bundle impact
+            (function () {
+                const script = document.createElement("script");
+                script.src = "https://unpkg.com/nprogress@0.2.0/nprogress.js";
+                script.onload = function () {
+                    if (typeof NProgress !== "undefined") {
+                        NProgress.configure({
+                            showSpinner: false,
+                            trickleSpeed: 200,
+                            minimum: 0.08,
+                        });
+                    }
+                };
+                document.head.appendChild(script);
+            })();
+        </script>
+
+        <!-- Google Analytics 4 (Deferred for better performance) -->
+        <script is:inline>
+            // Defer GA loading until after page load
+            window.addEventListener("load", function () {
+                setTimeout(function () {
+                    var script = document.createElement("script");
+                    script.src =
+                        "https://www.googletagmanager.com/gtag/js?id=G-850X7KS6F5";
+                    script.async = true;
+                    document.head.appendChild(script);
+
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() {
+                        dataLayer.push(arguments);
+                    }
+                    window.gtag = gtag;
+                    gtag("js", new Date());
+                    gtag("config", "G-850X7KS6F5");
+                }, 100);
+            });
+
+            // Font loading detection
+            if ("fonts" in document) {
+                document.fonts.ready.then(function () {
+                    document.documentElement.classList.add("fonts-loaded");
+                });
+            }
+        </script>
+        <style is:global>
+            /* ===== View Transitions API Enhancements ===== */
+            /* Shared elements for smooth transitions between pages */
+            h1,
+            .page-title {
+                view-transition-name: page-title;
+            }
+
+            .breadcrumb-nav {
+                view-transition-name: breadcrumb;
+            }
+
+            /* Prevent overflow during transitions */
+            ::view-transition-image-pair(*) {
+                overflow: hidden;
+            }
+
+            /* Enhanced motion sensitivity support */
+            @media (prefers-reduced-motion: reduce) {
+                ::view-transition-group(*),
+                ::view-transition-old(*),
+                ::view-transition-new(*) {
+                    animation: none !important;
+                }
+            }
+
+            /* CSS Variables for Dark Mode */
+            :root {
+                /* Legacy Dark Mode Variables (保持) */
+                --bg-primary: #ffffff;
+                --bg-secondary: #f9fafb;
+                --bg-gradient-start: #f9fafb;
+                --bg-gradient-end: #ffffff;
+                --text-primary: #111827;
+                --text-secondary: #4b5563;
+                --text-tertiary: #6b7280;
+                --border-color: #e5e7eb;
+                --border-color-hover: rgba(0, 104, 55, 0.3);
+                --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+                /* ===== Design Token System ===== */
+
+                /* Primary Color Scale */
+                --color-primary-50: #e6f7ef;
+                --color-primary-100: #ccefdf;
+                --color-primary-200: #99dfbf;
+                --color-primary-300: #66cf9f;
+                --color-primary-400: #33bf7f;
+                --color-primary-500: #006837;
+                --color-primary-600: #005028;
+                --color-primary-700: #003c1e;
+                --color-primary-800: #002814;
+                --color-primary-900: #00140a;
+
+                /* Gray Scale */
+                --color-gray-50: #f9fafb;
+                --color-gray-100: #f3f4f6;
+                --color-gray-200: #e5e7eb;
+                --color-gray-300: #d1d5db;
+                --color-gray-400: #9ca3af;
+                --color-gray-500: #6b7280;
+                --color-gray-600: #4b5563;
+                --color-gray-700: #374151;
+                --color-gray-800: #1f2937;
+                --color-gray-900: #111827;
+
+                /* Semantic Colors */
+                --color-success: #10b981;
+                --color-warning: #f59e0b;
+                --color-error: #ef4444;
+                --color-info: #3b82f6;
+
+                /* Typography */
+                --font-sans:
+                    "Noto Sans JP", -apple-system, BlinkMacSystemFont,
+                    sans-serif;
+                --font-mono: "SF Mono", Monaco, "Cascadia Code", monospace;
+
+                --font-size-xs: 0.75rem;
+                --font-size-sm: 0.875rem;
+                --font-size-base: 1rem;
+                --font-size-lg: 1.125rem;
+                --font-size-xl: 1.25rem;
+                --font-size-2xl: 1.5rem;
+                --font-size-3xl: 1.875rem;
+                --font-size-4xl: 2.25rem;
+                --font-size-5xl: 3rem;
+                --font-size-6xl: 3.75rem;
+
+                --font-weight-normal: 400;
+                --font-weight-medium: 500;
+                --font-weight-semibold: 600;
+                --font-weight-bold: 700;
+
+                --line-height-tight: 1.25;
+                --line-height-normal: 1.5;
+                --line-height-relaxed: 1.75;
+                --line-height-loose: 2;
+
+                /* Spacing (4px base) */
+                --space-0: 0;
+                --space-1: 0.25rem;
+                --space-2: 0.5rem;
+                --space-3: 0.75rem;
+                --space-4: 1rem;
+                --space-5: 1.25rem;
+                --space-6: 1.5rem;
+                --space-8: 2rem;
+                --space-10: 2.5rem;
+                --space-12: 3rem;
+                --space-16: 4rem;
+                --space-20: 5rem;
+                --space-24: 6rem;
+
+                /* Transitions */
+                --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+                --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+                --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+                --ease-in: cubic-bezier(0.4, 0, 1, 1);
+                --ease-out: cubic-bezier(0, 0, 0.2, 1);
+                --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+                /* Border Radius */
+                --radius-sm: 0.25rem;
+                --radius-md: 0.5rem;
+                --radius-lg: 0.75rem;
+                --radius-xl: 1rem;
+                --radius-full: 9999px;
+
+                /* Z-Index Scale */
+                --z-base: 0;
+                --z-dropdown: 10;
+                --z-sticky: 20;
+                --z-fixed: 30;
+                --z-modal-backdrop: 40;
+                --z-modal: 50;
+                --z-popover: 60;
+                --z-tooltip: 70;
+            }
+
+            [data-theme="dark"] {
+                --bg-primary: #1c1c1e; /* macOS dark card */
+                --bg-secondary: #000000; /* macOS black background */
+                --bg-gradient-start: #000000;
+                --bg-gradient-end: #1c1c1e;
+                --text-primary: #ffffff; /* Pure white */
+                --text-secondary: #ebebf5; /* macOS secondary label */
+                --text-tertiary: #ebebf599; /* macOS tertiary label */
+                --border-color: #38383a; /* macOS separator */
+                --border-color-hover: rgba(50, 215, 75, 0.4); /* macOS green */
+                --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+                --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+            }
+
+            html {
+                scroll-behavior: smooth;
+                background-color: var(--bg-primary);
+                transition: background-color 0.3s ease;
+            }
+
+            body {
+                background-color: var(--bg-primary);
+                color: var(--text-primary);
+                transition:
+                    background-color 0.3s ease,
+                    color 0.3s ease;
+            }
+
+            /* Comprehensive Dark Mode Styles - macOS Inspired */
+
+            /* Background Colors - Natural, softer tones */
+            [data-theme="dark"] .bg-white {
+                background-color: #1c1c1e !important; /* macOS dark card background */
+            }
+
+            [data-theme="dark"] .bg-gray-50 {
+                background-color: #000000 !important; /* macOS true black background */
+            }
+
+            [data-theme="dark"] .bg-gray-100 {
+                background-color: #2c2c2e !important; /* macOS secondary background */
+            }
+
+            [data-theme="dark"] .bg-gradient-to-b {
+                background-image: linear-gradient(
+                    to bottom,
+                    #000000,
+                    #1c1c1e
+                ) !important;
+            }
+
+            /* Accent color - slightly muted for dark mode */
+            [data-theme="dark"] .bg-\[\#006837\] {
+                background-color: #34c759 !important; /* macOS system green */
+            }
+
+            /* Text Colors - Natural contrast */
+            [data-theme="dark"] .text-gray-900,
+            [data-theme="dark"] .text-gray-800,
+            [data-theme="dark"] .text-gray-700 {
+                color: #ffffff !important; /* Pure white for primary text */
+            }
+
+            [data-theme="dark"] .text-gray-600 {
+                color: #ebebf5 !important; /* macOS secondary label */
+            }
+
+            [data-theme="dark"] .text-gray-500 {
+                color: #ebebf599 !important; /* macOS tertiary label - 60% opacity */
+            }
+
+            [data-theme="dark"] .text-gray-400 {
+                color: #ebebf54d !important; /* macOS quaternary label - 30% opacity */
+            }
+
+            [data-theme="dark"] .text-gray-300 {
+                color: #ebebf533 !important; /* Subtle text - 20% opacity */
+            }
+
+            /* Accent text colors */
+            [data-theme="dark"] .text-\[\#006837\] {
+                color: #32d74b !important; /* macOS system green (lighter) */
+            }
+
+            [data-theme="dark"] .hover\:text-\[\#006837\]:hover {
+                color: #30d158 !important;
+            }
+
+            /* Links - Natural appearance */
+            [data-theme="dark"]
+                a:not(.bg-\[\#006837\]):not(.bg-black):not(.bg-gradient-to-r) {
+                color: #ebebf5;
+            }
+
+            [data-theme="dark"] a:hover {
+                color: #32d74b; /* macOS green on hover */
+            }
+
+            /* Borders - Subtle separators */
+            [data-theme="dark"] .border-gray-200,
+            [data-theme="dark"] .border-gray-100 {
+                border-color: #38383a !important; /* macOS separator */
+            }
+
+            [data-theme="dark"] .border-t,
+            [data-theme="dark"] .border-b,
+            [data-theme="dark"] .border-l {
+                border-color: #38383a !important;
+            }
+
+            [data-theme="dark"] .border-\[\#006837\] {
+                border-color: #32d74b !important;
+            }
+
+            /* Shadows - Softer, more natural */
+            [data-theme="dark"] .shadow-sm {
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+            }
+
+            [data-theme="dark"] .shadow-md {
+                box-shadow:
+                    0 4px 6px -1px rgba(0, 0, 0, 0.4),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+            }
+
+            [data-theme="dark"] .shadow-lg {
+                box-shadow:
+                    0 10px 15px -3px rgba(0, 0, 0, 0.5),
+                    0 4px 6px -2px rgba(0, 0, 0, 0.3) !important;
+            }
+
+            [data-theme="dark"] .shadow-xl {
+                box-shadow:
+                    0 20px 25px -5px rgba(0, 0, 0, 0.6),
+                    0 10px 10px -5px rgba(0, 0, 0, 0.4) !important;
+            }
+
+            /* Header - Fixed backdrop blur issue */
+            [data-theme="dark"] header {
+                background-color: rgba(
+                    28,
+                    28,
+                    30,
+                    0.8
+                ) !important; /* Semi-transparent dark */
+                backdrop-filter: blur(20px) saturate(180%);
+                -webkit-backdrop-filter: blur(20px) saturate(180%);
+                border-bottom-color: #38383a !important;
+            }
+
+            /* Footer */
+            [data-theme="dark"] footer {
+                background-color: #1c1c1e !important;
+                border-top-color: #38383a !important;
+            }
+
+            /* Hover States - Subtle */
+            [data-theme="dark"] .hover\:bg-gray-50:hover {
+                background-color: #2c2c2e !important;
+            }
+
+            /* Dropdown Menus */
+            [data-theme="dark"] .dropdown-menu {
+                background-color: rgba(44, 44, 46, 0.95) !important;
+                backdrop-filter: blur(20px) saturate(180%);
+                -webkit-backdrop-filter: blur(20px) saturate(180%);
+                border-color: #38383a !important;
+            }
+
+            /* Font Display Optimization */
+            @font-face {
+                font-family: "Noto Sans JP";
+                font-display: swap;
+            }
+
+            /* CSS Containment for Performance */
+            .lecture-card,
+            .event-card {
+                contain: layout style paint;
+            }
+
+            .container {
+                contain: layout;
+            }
+
+            /* Enhanced Focus for WCAG 2.2 Compliance */
+            a:focus-visible,
+            button:focus-visible,
+            input:focus-visible,
+            textarea:focus-visible,
+            select:focus-visible {
+                outline: 3px solid #006837;
+                outline-offset: 3px;
+                border-radius: 4px;
+                position: relative;
+                z-index: 100; /* Ensure focus is not obscured */
+                transition: outline-offset 0.2s ease;
+            }
+
+            /* Focus Appearance - Enhanced contrast */
+            [data-theme="dark"] a:focus-visible,
+            [data-theme="dark"] button:focus-visible,
+            [data-theme="dark"] input:focus-visible,
+            [data-theme="dark"] textarea:focus-visible,
+            [data-theme="dark"] select:focus-visible {
+                outline-color: #32d74b;
+            }
+
+            /* Remove outline for mouse users */
+            a:focus:not(:focus-visible),
+            button:focus:not(:focus-visible) {
+                outline: none;
+            }
+
+            /* Touch Target Size Optimization - WCAG 2.2 */
+            button,
+            a,
+            input[type="submit"],
+            input[type="button"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            /* Skeleton Loading Animation */
+            @keyframes skeleton-loading {
+                0% {
+                    background-position: -200px 0;
+                }
+                100% {
+                    background-position: calc(200px + 100%) 0;
+                }
+            }
+
+            .skeleton {
+                background-color: #e0e0e0;
+                background-image: linear-gradient(
+                    90deg,
+                    #e0e0e0 0px,
+                    #f0f0f0 40px,
+                    #e0e0e0 80px
+                );
+                background-size: 200px 100%;
+                background-repeat: no-repeat;
+                animation: skeleton-loading 1.2s ease-in-out infinite;
+            }
+
+            [data-theme="dark"] .skeleton {
+                background-color: #374151;
+                background-image: linear-gradient(
+                    90deg,
+                    #374151 0px,
+                    #4b5563 40px,
+                    #374151 80px
+                );
+            }
+
+            .skeleton-text {
+                height: 1rem;
+                margin-bottom: 0.5rem;
+                border-radius: 0.25rem;
+            }
+
+            .skeleton-text.short {
+                width: 60%;
+            }
+
+            .skeleton-image {
+                width: 100%;
+                aspect-ratio: 3/4;
+                border-radius: 0.5rem 0.5rem 0 0;
+            }
+
+            /* Toast Notifications */
+            .toast-container {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 10000;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .toast {
+                min-width: 300px;
+                max-width: 400px;
+                padding: 16px 20px;
+                border-radius: 8px;
+                background: white;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                transform: translateX(400px);
+                opacity: 0;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .toast.show {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            .toast-success {
+                border-left: 4px solid #10b981;
+            }
+
+            .toast-error {
+                border-left: 4px solid #ef4444;
+            }
+
+            .toast-info {
+                border-left: 4px solid #3b82f6;
+            }
+
+            .toast-icon {
+                flex-shrink: 0;
+                width: 20px;
+                height: 20px;
+            }
+
+            .toast-message {
+                flex: 1;
+                font-size: 14px;
+                line-height: 1.5;
+                color: #1f2937;
+            }
+
+            [data-theme="dark"] .toast {
+                background: #1f2937;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+            [data-theme="dark"] .toast-message {
+                color: #f9fafb;
+            }
+
+            /* Feedback Button Animation */
+            @keyframes pulse-slow {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.85;
+                }
+            }
+
+            .animate-pulse-slow {
+                animation: pulse-slow 3s ease-in-out infinite;
+            }
+
+            #feedback-button:hover {
+                animation: none;
+            }
+
+            ::selection {
+                background-color: #006837;
+                color: white;
+            }
+
+            /* Micro-interactions */
+
+            /* Ripple Effect for Buttons */
+            @keyframes ripple {
+                0% {
+                    transform: scale(0);
+                    opacity: 0.6;
+                }
+                100% {
+                    transform: scale(2.5);
+                    opacity: 0;
+                }
+            }
+
+            .ripple-effect {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .ripple-effect::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 20px;
+                height: 20px;
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                transform: translate(-50%, -50%) scale(0);
+                pointer-events: none;
+            }
+
+            .ripple-effect:active::after {
+                animation: ripple 0.6s ease-out;
+            }
+
+            /* 3D Tilt Effect for Cards with Enhanced Depth */
+            .card-tilt {
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+                transform-style: preserve-3d;
+                box-shadow:
+                    0 4px 20px -8px rgba(0, 104, 55, 0.08),
+                    0 0 0 1px rgba(0, 0, 0, 0.04);
+            }
+
+            @media (hover: hover) {
+                .card-tilt:hover {
+                    transform: perspective(1000px) rotateY(2deg) rotateX(-2deg)
+                        scale(1.01);
+                    box-shadow:
+                        0 12px 40px -10px rgba(0, 104, 55, 0.15),
+                        0 0 0 1px rgba(0, 104, 55, 0.08);
+                }
+            }
+
+            /* Smooth hover transitions */
+            .smooth-hover {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            /* Will-change for performance optimization */
+            .card-tilt,
+            .smooth-hover {
+                will-change: transform;
+            }
+
+            /* ===== CSS content-visibility for Performance ===== */
+            /* Dramatically improves rendering speed by skipping off-screen content */
+
+            .content-visibility-auto {
+                content-visibility: auto;
+                contain-intrinsic-size: 0 400px;
+            }
+
+            /* Member cards optimization */
+            .member-card {
+                content-visibility: auto;
+                contain-intrinsic-size: 0 350px;
+            }
+
+            /* Lecture cards optimization */
+            .lecture-card {
+                content-visibility: auto;
+                contain-intrinsic-size: 0 300px;
+            }
+
+            /* Shimmer loading effect for perceived performance */
+            @keyframes shimmer {
+                0% {
+                    background-position: -1000px 0;
+                }
+                100% {
+                    background-position: 1000px 0;
+                }
+            }
+
+            .skeleton {
+                background: linear-gradient(
+                    90deg,
+                    #f0f0f0 25%,
+                    #e0e0e0 50%,
+                    #f0f0f0 75%
+                );
+                background-size: 1000px 100%;
+                animation: shimmer 2s infinite linear;
+                border-radius: 4px;
+            }
+
+            [data-theme="dark"] .skeleton {
+                background: linear-gradient(
+                    90deg,
+                    #2a2a2a 25%,
+                    #1a1a1a 50%,
+                    #2a2a2a 75%
+                );
+                background-size: 1000px 100%;
+            }
+
+            img.loading {
+                background: linear-gradient(
+                    90deg,
+                    #f0f0f0 25%,
+                    #e0e0e0 50%,
+                    #f0f0f0 75%
+                );
+                background-size: 1000px 100%;
+                animation: shimmer 2s infinite;
+            }
+
+            /* ===== Micro-interactions Enhancement ===== */
+            /* Button feedback - subtle scale on click */
+            button,
+            .btn,
+            a.button {
+                transition:
+                    transform var(--transition-fast),
+                    box-shadow var(--transition-fast),
+                    background-color var(--transition-fast);
+            }
+
+            button:active,
+            .btn:active,
+            a.button:active {
+                transform: scale(0.98);
+            }
+
+            /* Enhanced link hover with underline animation */
+            a:not(.button):not(.btn) {
+                position: relative;
+                transition: color var(--transition-fast);
+            }
+
+            a:not(.button):not(.btn)::after {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: -2px;
+                left: 0;
+                background-color: currentColor;
+                transition: width var(--transition-base);
+            }
+
+            a:not(.button):not(.btn):hover::after {
+                width: 100%;
+            }
+
+            /* Smooth page scroll */
+            html {
+                scroll-behavior: smooth;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                html {
+                    scroll-behavior: auto;
+                }
+
+                button,
+                .btn,
+                a {
+                    transition: none !important;
+                }
+
+                a::after {
+                    transition: none !important;
+                }
+            }
+            /* Remove will-change after interaction */
+            @media (prefers-reduced-motion: reduce) {
+                .card-tilt,
+                .smooth-hover {
+                    will-change: auto;
+                    transition: none;
+                }
+            }
+        </style>
+
+        <!-- Structured Data -->
+        <SchemaOrganization />
+    </head>
+    <body
+        class="bg-gray-50 text-[#333333] font-sans antialiased min-h-screen flex flex-col tracking-wide font-normal selection:bg-[#006837] selection:text-white relative"
+    >
+        <!-- HEADER -->
+        <header
+            class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200"
+        >
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex h-16 items-center justify-between">
+                    <!-- Logo -->
+                    <a href="/" class="flex-shrink-0">
+                        <span
+                            class="text-xl font-bold text-gray-900 hover:text-[#006837] transition-colors"
+                        >
+                            AIU Cedar Society
+                        </span>
+                    </a>
+
+                    <!-- Desktop Navigation -->
+                    <nav class="hidden md:flex items-center" style="gap: 2rem;">
+                        <!-- About Dropdown -->
+                        <div class="relative dropdown-container">
+                            <button
+                                class="dropdown-button inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                                style="gap: 0.375rem;"
+                            >
+                                About
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div
+                                class="dropdown-menu absolute left-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible transition-all duration-150"
+                                style="z-index: 100;"
+                            >
+                                <a
+                                    href="/about"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    >私たちについて</a
+                                >
+                                <a
+                                    href="/about/history"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    >設立の経緯</a
+                                >
+                                <a
+                                    href="/about/members"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    >メンバー紹介</a
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Events Dropdown -->
+                        <div class="relative dropdown-container">
+                            <button
+                                class="dropdown-button inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                                style="gap: 0.375rem;"
+                            >
+                                Events
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div
+                                class="dropdown-menu absolute left-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible transition-all duration-150"
+                                style="z-index: 100;"
+                            >
+                                <a
+                                    href="/events/upcoming"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    >今後の予定</a
+                                >
+                                <a
+                                    href="/events/past"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    >過去の講演会</a
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Media -->
+                        <a
+                            href="/media"
+                            class="text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                            >Media</a
+                        >
+
+                        <!-- Contact -->
+                        <a
+                            href="/contact"
+                            class="text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                            >Contact</a
+                        >
+                    </nav>
+
+                    <!-- Mobile menu button -->
+                    <button
+                        id="mobile-menu-button"
+                        class="md:hidden rounded-md p-2 text-gray-500 hover:text-[#006837] hover:bg-gray-100 transition-colors"
+                        aria-label="メニューを開く"
+                    >
+                        <svg
+                            class="h-6 w-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <style>
+            /* HEADER FORCED SCOPED CSS */
+            header {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 50 !important;
+                background-color: white !important;
+                border-bottom: 1px solid #e5e7eb !important;
+                height: 64px !important;
+            }
+
+            header > div:first-child {
+                max-width: 1280px !important;
+                margin: 0 auto !important;
+                padding: 0 24px !important;
+                height: 100% !important;
+            }
+
+            header > div:first-child > div:first-child {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                height: 100% !important;
+            }
+
+            /* Logo vertical centering */
+            header a:first-child {
+                display: inline-flex !important;
+                align-items: center !important;
+                height: 100% !important;
+            }
+
+            @media (min-width: 768px) {
+                header nav {
+                    display: flex !important;
+                    align-items: center !important;
+                    flex-wrap: nowrap !important;
+                    gap: 32px !important;
+                }
+            }
+
+            header nav a,
+            header nav .dropdown-button {
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                color: #4b5563 !important;
+                transition: color 0.2s ease !important;
+                white-space: nowrap !important;
+                line-height: 1.5 !important;
+                height: 40px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+            }
+
+            header nav a:hover,
+            header nav .dropdown-button:hover {
+                color: #006837 !important;
+            }
+
+            header nav .dropdown-button {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+            }
+
+            header .flex.items-center.space-x-4 {
+                display: flex !important;
+                align-items: center !important;
+                gap: 16px !important;
+            }
+
+            header .dropdown-menu {
+                z-index: 100 !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 100% !important;
+                margin-top: 4px !important;
+                min-width: 180px !important;
+                padding: 8px 0 !important;
+                background-color: white !important;
+                border-radius: 8px !important;
+                box-shadow:
+                    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+                border: 1px solid #e5e7eb !important;
+            }
+
+            header .dropdown-menu a {
+                display: block !important;
+                padding: 10px 16px !important;
+                font-size: 14px !important;
+                color: #374151 !important;
+            }
+
+            header .dropdown-menu a:hover {
+                background-color: #f3f4f6 !important;
+                color: #006837 !important;
+            }
+
+            /* Dropdown container needs relative positioning */
+            header .dropdown-container {
+                position: relative !important;
+            }
+        </style>
+
+        <!-- Mobile Menu Panel - iOS 26 Liquid Glass Style (60% width, no blocking overlay) -->
+        <div
+            id="mobile-menu"
+            class="fixed inset-y-0 right-0 z-50 transform translate-x-full transition-transform duration-300 ease-out md:hidden"
+            style="width: 60%; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(50px) saturate(200%); -webkit-backdrop-filter: blur(50px) saturate(200%); border-left: 1px solid rgba(255, 255, 255, 0.4); box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);"
+        >
+            <!-- Header -->
+            <div
+                class="flex h-16 items-center justify-between px-5"
+                style="border-bottom: 1px solid rgba(0, 0, 0, 0.06);"
+            >
+                <span
+                    class="text-base font-semibold"
+                    style="color: rgba(0, 0, 0, 0.8);">Menu</span
+                >
+                <button
+                    id="mobile-menu-close"
+                    class="rounded-full p-2 transition-all duration-200"
+                    style="background: rgba(0, 0, 0, 0.04);"
+                    aria-label="メニューを閉じる"
+                >
+                    <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        style="color: rgba(0, 0, 0, 0.5);"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Menu Content -->
+            <div class="overflow-y-auto h-full pb-24 px-3 py-5">
+                <!-- About Section -->
+                <div class="mb-5">
+                    <p
+                        class="text-xs font-semibold uppercase tracking-widest mb-2 px-3"
+                        style="color: rgba(0, 0, 0, 0.35);"
+                    >
+                        About
+                    </p>
+                    <div class="space-y-0.5">
+                        <a href="/about" class="mobile-menu-link"
+                            >私たちについて</a
+                        >
+                        <a href="/about/history" class="mobile-menu-link"
+                            >設立の経緯</a
+                        >
+                        <a href="/about/members" class="mobile-menu-link"
+                            >メンバー紹介</a
+                        >
+                    </div>
+                </div>
+
+                <!-- Events Section -->
+                <div class="mb-5">
+                    <p
+                        class="text-xs font-semibold uppercase tracking-widest mb-2 px-3"
+                        style="color: rgba(0, 0, 0, 0.35);"
+                    >
+                        Events
+                    </p>
+                    <div class="space-y-0.5">
+                        <a href="/events/upcoming" class="mobile-menu-link"
+                            >開催予定</a
+                        >
+                        <a href="/events/past" class="mobile-menu-link"
+                            >講演会アーカイブ</a
+                        >
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div
+                    class="my-4 mx-3"
+                    style="height: 1px; background: rgba(0, 0, 0, 0.06);"
+                >
+                </div>
+
+                <!-- Other Links -->
+                <div class="space-y-0.5">
+                    <a href="/media" class="mobile-menu-link">メディア掲載</a>
+                    <a href="/contact" class="mobile-menu-link">お問い合わせ</a>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* iOS 26 Liquid Glass Mobile Menu Links */
+            .mobile-menu-link {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 500;
+                color: rgba(0, 0, 0, 0.85);
+                transition: all 0.2s ease;
+            }
+            .mobile-menu-link:hover,
+            .mobile-menu-link:active {
+                background: rgba(0, 104, 55, 0.08);
+                color: #006837;
+            }
+            .mobile-menu-link:active {
+                transform: scale(0.98);
+            }
+        </style>
+
+        <!-- Main Content -->
+        <main class="flex-grow pt-16" id="top">
+            <slot />
+        </main>
+        <footer
+            style="padding: 64px 24px; border-top: 1px solid #e5e7eb; background-color: #f9fafb; position: relative; z-index: 10;"
+        >
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <!-- Title -->
+                <p
+                    style="color: #111827; font-weight: 700; font-size: 1.25rem; margin-bottom: 12px;"
+                >
+                    AIU Cedar Society
+                </p>
+                <!-- Description -->
+                <p
+                    style="color: #4b5563; font-size: 0.875rem; line-height: 1.6; margin-bottom: 40px;"
+                >
+                    秋田国際教養大学の学生主導の公認団体。<br />
+                    著名なゲストを招いた講演会を通じて、学生と秋田社会をつなぎます。
+                </p>
+
+                <!-- Instagram Card -->
+                <div
+                    style="display: flex; justify-content: center; margin-bottom: 40px;"
+                >
+                    <a
+                        href="https://www.instagram.com/aiucedarsociety"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style="display: inline-flex; align-items: center; gap: 16px; padding: 16px 24px; background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; transition: all 0.3s ease;"
+                        class="hover:shadow-md hover:border-gray-300"
+                    >
+                        <!-- Icon Box -->
+                        <div
+                            style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);"
+                        >
+                            <svg
+                                style="width: 24px; height: 24px; color: white;"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                                ></path>
+                            </svg>
+                        </div>
+                        <!-- Text -->
+                        <div style="text-align: left;">
+                            <p
+                                style="color: #6b7280; font-size: 0.75rem; margin-bottom: 2px;"
+                            >
+                                Follow us on Instagram
+                            </p>
+                            <p
+                                style="color: #111827; font-weight: 600; font-size: 1rem;"
+                            >
+                                @aiucedarsociety
+                            </p>
+                        </div>
+                        <!-- Arrow -->
+                        <svg
+                            style="width: 20px; height: 20px; color: #9ca3af;"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div
+                    style="display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-bottom: 32px;"
+                >
+                    <a
+                        href="/about"
+                        style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
+                        class="hover:text-[#006837]">About</a
+                    >
+                    <a
+                        href="/events/upcoming"
+                        style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
+                        class="hover:text-[#006837]">Events</a
+                    >
+                    <a
+                        href="/media"
+                        style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
+                        class="hover:text-[#006837]">Media</a
+                    >
+                    <a
+                        href="/contact"
+                        style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
+                        class="hover:text-[#006837]">Contact</a
+                    >
+                </div>
+
+                <!-- Copyright -->
+                <div style="padding-top: 24px; border-top: 1px solid #e5e7eb;">
+                    <p
+                        style="color: #6b7280; font-size: 0.75rem; letter-spacing: 0.025em;"
+                    >
+                        &copy; {new Date().getFullYear()} AIU Cedar Society. All rights
+                        reserved.
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Feedback Button (Test Operation) -->
+        <a
+            href="https://forms.gle/K2D9X2E7Ji4RBMZ57"
+            target="_blank"
+            rel="noopener noreferrer"
+            id="feedback-button"
+            style="position: fixed !important; bottom: 6rem !important; right: 1.5rem !important; z-index: 50 !important;"
+            class="bg-white dark:bg-gray-800 text-[#006837] dark:text-green-400 border-2 border-[#006837] dark:border-green-400 rounded-full shadow-lg hover:shadow-xl hover:bg-[#006837] hover:text-white dark:hover:bg-green-400 dark:hover:text-gray-900 transition-all duration-300 flex items-center gap-3 px-5 py-3 hover:scale-105 group"
+            aria-label="フィードバックを送る"
+        >
+            <svg
+                class="w-5 h-5 group-hover:rotate-12 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                ></path>
+            </svg>
+            <span class="font-bold text-sm whitespace-nowrap"
+                >フィードバック</span
+            >
+        </a>
+
+        <!-- Back to Top Button -->
+        <a
+            href="#top"
+            id="back-to-top"
+            style="position: fixed !important; bottom: 1.5rem !important; right: 1.5rem !important; z-index: 50 !important;"
+            class="w-12 h-12 bg-[#006837] text-white rounded-full flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-[#005028] shadow-lg hover:shadow-xl"
+            aria-label="トップに戻る"
+        >
+            <svg
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+            </svg>
+        </a>
+
+        <!-- Performance Optimization Scripts -->
+        <script>
+            import { setupLazyLoading } from "../utils/lazyLoad";
+            import { measureWebVitals } from "../utils/webVitals";
+
+            // Initialize on page load (View Transitions compatible)
+            document.addEventListener("astro:page-load", () => {
+                setupLazyLoading();
+                measureWebVitals();
+            });
+        </script>
+    </body>
+</html>
+
+<style>
+    :root {
+        --font-sans: "Noto Sans JP", sans-serif;
+        --color-aiu-green: #006837;
+    }
+    html {
+        font-family: var(--font-sans);
+    }
+
+    /* Desktop hover support */
+    @media (hover: hover) {
+        .dropdown-container:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+        .dropdown-container:hover .dropdown-icon {
+            transform: rotate(180deg);
+        }
+    }
+
+    /* Active dropdown state */
+    .dropdown-container.active .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+    }
+    .dropdown-container.active .dropdown-icon {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script is:inline>
+    // Mobile Menu Toggle
+    function initMobileMenu() {
+        const menuButton = document.getElementById("mobile-menu-button");
+        const menuClose = document.getElementById("mobile-menu-close");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        if (!menuButton || !mobileMenu) {
+            console.log("Mobile menu elements not found");
+            return;
+        }
+
+        // Remove any existing click handlers by cloning nodes
+        const newMenuButton = menuButton.cloneNode(true);
+        menuButton.parentNode?.replaceChild(newMenuButton, menuButton);
+
+        const newMenuClose = menuClose?.cloneNode(true);
+        if (menuClose && newMenuClose) {
+            menuClose.parentNode?.replaceChild(newMenuClose, menuClose);
+        }
+
+        // Get fresh references
+        const freshMenuButton = document.getElementById("mobile-menu-button");
+        const freshMenuClose = document.getElementById("mobile-menu-close");
+        const freshMobileMenu = document.getElementById("mobile-menu");
+
+        function openMenu() {
+            console.log("Opening mobile menu");
+            if (freshMobileMenu) {
+                freshMobileMenu.classList.remove("translate-x-full");
+                freshMobileMenu.classList.add("translate-x-0");
+                if (freshMenuButton)
+                    freshMenuButton.setAttribute("aria-expanded", "true");
+            }
+        }
+
+        function closeMenu() {
+            console.log("Closing mobile menu");
+            if (freshMobileMenu) {
+                freshMobileMenu.classList.remove("translate-x-0");
+                freshMobileMenu.classList.add("translate-x-full");
+                if (freshMenuButton)
+                    freshMenuButton.setAttribute("aria-expanded", "false");
+            }
+        }
+
+        // Event listeners
+        if (freshMenuButton) {
+            freshMenuButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openMenu();
+            });
+            console.log("Mobile menu button listener attached");
+        }
+        if (freshMenuClose) {
+            freshMenuClose.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeMenu();
+            });
+        }
+
+        // Close menu on link click
+        const menuLinks = freshMobileMenu?.querySelectorAll("a");
+        menuLinks?.forEach((link) => {
+            link.addEventListener("click", () => {
+                setTimeout(closeMenu, 100);
+            });
+        });
+
+        // Close on escape key
+        const escapeHandler = (e) => {
+            if (e.key === "Escape") {
+                closeMenu();
+            }
+        };
+        document.removeEventListener("keydown", escapeHandler);
+        document.addEventListener("keydown", escapeHandler);
+    }
+
+    initMobileMenu();
+
+    // Re-initialize after View Transitions page swap
+    document.addEventListener("astro:page-load", () => {
+        initMobileMenu();
+    });
+
+    // Dropdown Menu Functionality - Optimized with event delegation
+    function initDropdowns() {
+        const dropdownContainers = document.querySelectorAll(
+            ".dropdown-container",
+        );
+        if (dropdownContainers.length === 0) return;
+
+        // Single click handler for all dropdowns (event delegation)
+        document.addEventListener(
+            "click",
+            function (e) {
+                const button = e.target.closest(".dropdown-button");
+
+                if (button) {
+                    const container = button.closest(".dropdown-container");
+                    // Close other dropdowns
+                    dropdownContainers.forEach((otherContainer) => {
+                        if (otherContainer !== container) {
+                            otherContainer.classList.remove("active");
+                        }
+                    });
+                    // Toggle current
+                    container?.classList.toggle("active");
+                    e.stopPropagation();
+                } else if (!e.target.closest(".dropdown-menu")) {
+                    // Close all if clicking outside
+                    dropdownContainers.forEach((container) => {
+                        container.classList.remove("active");
+                    });
+                }
+            },
+            { passive: true },
+        );
+
+        // Close on navigation
+        document.querySelectorAll(".dropdown-menu a").forEach((link) => {
+            link.addEventListener(
+                "click",
+                function () {
+                    dropdownContainers.forEach((container) => {
+                        container.classList.remove("active");
+                    });
+                },
+                { passive: true },
+            );
+        });
+    }
+
+    // Defer dropdown initialization until after page is interactive
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initDropdowns);
+    } else {
+        // Use requestIdleCallback for better performance
+        if ("requestIdleCallback" in window) {
+            requestIdleCallback(initDropdowns);
+        } else {
+            setTimeout(initDropdowns, 1);
+        }
+    }
+
+    // Toast Notification System
+    window.showToast = function (message, type = "success") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${type}`;
+        toast.setAttribute("role", "alert");
+        toast.setAttribute("aria-live", "polite");
+
+        const icons = {
+            success: "✓",
+            error: "✕",
+            info: "ℹ",
+        };
+
+        toast.innerHTML = `
+            <div class="toast-icon" style="color: ${type === "success" ? "#10b981" : type === "error" ? "#ef4444" : "#3b82f6"}; font-size: 18px; font-weight: bold;">
+                ${icons[type] || icons.info}
+            </div>
+            <div class="toast-message">${message}</div>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add("show");
+        }, 100);
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // View Transitions API with NProgress Integration
+    document.addEventListener("astro:before-preparation", () => {
+        if (typeof NProgress !== "undefined") {
+            NProgress.start();
+        }
+    });
+
+    document.addEventListener("astro:after-swap", () => {
+        if (typeof NProgress !== "undefined") {
+            NProgress.done();
+        }
+    });
+
+    document.addEventListener("astro:page-load", () => {
+        if (typeof NProgress !== "undefined") {
+            NProgress.done();
+        }
+    });
+
+    // Back to Top Button Handler
+    window.addEventListener(
+        "scroll",
+        function () {
+            const backToTopBtn = document.getElementById("back-to-top");
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove("opacity-0", "invisible");
+                backToTopBtn.classList.add("opacity-100", "visible");
+            } else {
+                backToTopBtn.classList.add("opacity-0", "invisible");
+                backToTopBtn.classList.remove("opacity-100", "visible");
+            }
+        },
+        { passive: true },
+    );
+</script>

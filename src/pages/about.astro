@@ -1,0 +1,96 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
+import BreadcrumbSchema from "../components/BreadcrumbSchema.astro";
+import { getPages } from "../library/microcms";
+
+// Fetch pages content
+const pages = await getPages();
+
+// SEO
+const seo = {
+    title: "AIU Cedar Societyについて | AIU Cedar Society",
+    description:
+        "AIU Cedar Societyは、2024年春に設立された秋田国際教養大学の学生主導の公認団体です。秋田とAIU生の可能性をつなぐことをミッションに、講演会を通じて「出会い・学び・実践」のサイクルを創り出します。",
+    keywords: "AIU Cedar Society,About,団体概要,ミッション,ビジョン",
+};
+
+const breadcrumbItems = [
+    { label: "ホーム", href: "/" },
+    { label: "私たちについて" },
+];
+---
+
+<Layout seo={seo}>
+    <BreadcrumbSchema items={breadcrumbItems} />
+    <div class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+        <div
+            class="container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-12 md:pb-20 max-w-5xl"
+        >
+            <Breadcrumb items={breadcrumbItems} />
+            {/* Back Button */}
+            <a
+                href="/"
+                class="inline-flex items-center text-gray-500 hover:text-[#006837] mb-8 md:mb-12 transition-colors group text-sm font-medium min-h-[44px]"
+            >
+                <svg
+                    class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"></path>
+                </svg>
+                トップに戻る
+            </a>
+
+            {/* Hero Section */}
+            <div class="relative mb-12 md:mb-16">
+                <div class="relative mb-6">
+                    <div class="absolute top-0 left-0 w-px h-full bg-[#006837]">
+                    </div>
+                    <h1
+                        class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight pl-6"
+                    >
+                        AIU Cedar Society<br class="hidden md:block" /><span
+                            class="text-[#006837]">について</span
+                        >
+                    </h1>
+                </div>
+                <p
+                    class="text-lg md:text-xl text-gray-600 leading-relaxed pl-6 max-w-2xl"
+                >
+                    秋田とAIU生の可能性をつなぐ、学生主導の公認団体
+                </p>
+            </div>
+
+            {/* Content from MicroCMS */}
+            <div class="bg-white rounded-lg shadow-md p-8 md:p-10 mb-8">
+                <div
+                    class="prose prose-slate prose-lg max-w-none leading-relaxed text-gray-700
+                prose-headings:font-bold prose-headings:text-gray-900 prose-headings:tracking-tight
+                prose-h1:text-3xl prose-h1:mt-8 prose-h1:mb-4
+                prose-h2:text-2xl prose-h2:mt-6 prose-h2:mb-3
+                prose-h3:text-xl prose-h3:mt-4 prose-h3:mb-2
+                prose-p:my-4
+                prose-a:text-[#006837] prose-a:font-medium prose-a:no-underline hover:prose-a:underline
+                prose-strong:text-gray-900 prose-strong:font-bold
+                prose-em:text-gray-700 prose-em:italic
+                prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6
+                prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-6
+                prose-li:my-1
+                prose-blockquote:border-l-4 prose-blockquote:border-[#006837] prose-blockquote:pl-4 prose-blockquote:italic
+                prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                prose-pre:bg-gray-900 prose-pre:text-gray-100
+                prose-img:rounded-lg prose-img:shadow-md"
+                >
+                    <div set:html={pages.about_content} />
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>

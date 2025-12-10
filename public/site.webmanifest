@@ -1,0 +1,15 @@
+{
+    "name": "AIU Cedar Society",
+    "short_name": "Cedar Society",
+    "description": "秋田とAIU生の可能性をつなぐ講演会シリーズ",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "1024x1024",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#006837",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}

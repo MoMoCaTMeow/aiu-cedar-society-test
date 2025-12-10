@@ -1,0 +1,81 @@
+---
+/**
+ * OptimizedImage - MicroCMS画像最適化コンポーネント
+ *
+ * MicroCMSの画像APIを利用して、適切なサイズとフォーマットに最適化された
+ * 画像を表示します。AVIF/WebP変換、リサイズ、srcset対応を自動で行います。
+ */
+interface Props {
+    src: string;
+    alt: string;
+    width: number;
+    height?: number;
+    sizes?: string;
+    class?: string;
+    loading?: "lazy" | "eager";
+    fetchpriority?: "high" | "low" | "auto";
+    quality?: number;
+}
+
+const {
+    src,
+    alt,
+    width,
+    height,
+    sizes = "100vw",
+    class: className = "",
+    loading = "lazy",
+    fetchpriority = "auto",
+    quality = 80,
+} = Astro.props;
+
+/**
+ * MicroCMS画像URLに最適化パラメータを追加
+ * @param url - 元の画像URL
+ * @param w - 幅（ピクセル）
+ * @param format - 画像フォーマット（webp or avif）
+ * @param q - 品質（1-100）
+ * @returns 最適化パラメータ付きURL
+ */
+function getOptimizedUrl(
+    url: string,
+    w: number,
+    format: "webp" | "avif" = "webp",
+    q: number = quality,
+): string {
+    const separator = url.includes("?") ? "&" : "?";
+    return `${url}${separator}w=${w}&fm=${format}&q=${q}`;
+}
+
+// srcset生成（1x, 2x対応でRetinaディスプレイに最適化）
+// AVIF優先、WebPフォールバック
+const srcsetAvif = [
+    `${getOptimizedUrl(src, width, "avif")} 1x`,
+    `${getOptimizedUrl(src, width * 2, "avif")} 2x`,
+].join(", ");
+
+const srcsetWebp = [
+    `${getOptimizedUrl(src, width, "webp")} 1x`,
+    `${getOptimizedUrl(src, width * 2, "webp")} 2x`,
+].join(", ");
+---
+
+<picture>
+    <!-- AVIF - Best compression (20-30% smaller than WebP) -->
+    <source type="image/avif" srcset={srcsetAvif} sizes={sizes} />
+
+    <!-- WebP - Fallback for browsers without AVIF support -->
+    <source type="image/webp" srcset={srcsetWebp} sizes={sizes} />
+
+    <!-- Original format - Final fallback -->
+    <img
+        src={getOptimizedUrl(src, width, "webp")}
+        alt={alt}
+        width={width}
+        height={height}
+        class={className}
+        loading={loading}
+        fetchpriority={fetchpriority}
+        decoding="async"
+    />
+</picture>

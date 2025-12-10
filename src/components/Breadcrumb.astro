@@ -1,0 +1,90 @@
+---
+interface BreadcrumbItem {
+    label: string;
+    href?: string; // 最後のアイテムはリンクなし
+}
+
+interface Props {
+    items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="パンくずリスト" class="breadcrumb-nav">
+    <ol
+        class="flex items-center flex-wrap gap-2 text-sm text-gray-600"
+        itemscope
+        itemtype="https://schema.org/BreadcrumbList"
+    >
+        {
+            items.map((item, index) => (
+                <li
+                    class="flex items-center gap-2"
+                    itemprop="itemListElement"
+                    itemscope
+                    itemtype="https://schema.org/ListItem"
+                >
+                    {item.href ? (
+                        <a
+                            href={item.href}
+                            class="hover:text-[#006837] transition-colors inline-flex items-center"
+                            itemprop="item"
+                        >
+                            <span itemprop="name">{item.label}</span>
+                        </a>
+                    ) : (
+                        <span
+                            class="text-gray-900 font-medium inline-flex items-center"
+                            aria-current="page"
+                            itemprop="name"
+                        >
+                            {item.label}
+                        </span>
+                    )}
+                    <meta itemprop="position" content={String(index + 1)} />
+                    {index < items.length - 1 && (
+                        <svg
+                            class="w-3.5 h-3.5 text-gray-400 flex-shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5l7 7-7 7"
+                            />
+                        </svg>
+                    )}
+                </li>
+            ))
+        }
+    </ol>
+</nav>
+
+<style>
+    .breadcrumb-nav {
+        margin-bottom: var(--space-6);
+        padding: var(--space-2) 0;
+    }
+
+    .breadcrumb-nav ol {
+        line-height: 1.5;
+    }
+
+    /* ダークモード対応 */
+    [data-theme="dark"] .breadcrumb-nav ol {
+        color: var(--text-secondary);
+    }
+
+    [data-theme="dark"] .breadcrumb-nav a:hover {
+        color: #32d74b; /* macOS green */
+    }
+
+    [data-theme="dark"] .breadcrumb-nav span[aria-current="page"] {
+        color: var(--text-primary);
+    }
+</style>

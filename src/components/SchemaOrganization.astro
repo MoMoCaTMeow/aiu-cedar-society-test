@@ -1,0 +1,33 @@
+---
+const siteUrl = Astro.site || "https://aiu-cedar-society.vercel.app";
+const siteName = "AIU Cedar Society";
+
+// Organization Schema
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteName,
+  url: siteUrl,
+  logo: {
+    "@type": "ImageObject",
+    url: `${siteUrl}/favicon-32x32.png`,
+    width: 112,
+    height: 112,
+  },
+  description: "秋田とAIU生の可能性をつなぐ学生主導の公認団体",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "秋田市",
+    addressRegion: "秋田県",
+    addressCountry: "JP",
+  },
+  foundingDate: "2024-06",
+  sameAs: ["https://www.instagram.com/aiucedarsociety"],
+};
+---
+
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify(organizationSchema)}
+/>

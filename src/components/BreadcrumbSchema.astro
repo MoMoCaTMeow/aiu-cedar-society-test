@@ -1,0 +1,29 @@
+---
+interface BreadcrumbItem {
+    label: string;
+    href?: string; // 最後のアイテムはhrefなし
+}
+
+interface Props {
+    items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const siteUrl = "https://aiu-cedar-society.vercel.app";
+
+//  href が存在するアイテムのみを構造化データに含める
+const breadcrumbList = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items
+        .filter((item) => item.href) // hrefがあるアイテムのみ
+        .map((item, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: item.label,
+            item: `${siteUrl}${item.href}`,
+        })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbList)} />

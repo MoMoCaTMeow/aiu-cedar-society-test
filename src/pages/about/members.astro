@@ -1,0 +1,300 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getMembers } from "../../library/microcms";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import BreadcrumbSchema from "../../components/BreadcrumbSchema.astro";
+
+// Fetch members
+const response = await getMembers();
+const members = response.contents;
+
+// Group members by status (配列対応)
+const getStatus = (member: any) => {
+    if (!member.status) return null;
+    // 配列の場合は最初の要素を取得、文字列の場合はそのまま
+    return Array.isArray(member.status) ? member.status[0] : member.status;
+};
+
+const currentMembers = members.filter((m) => {
+    const status = getStatus(m);
+    return status === "current" || !status; // デフォルトは在校生
+});
+
+const graduateMembers = members.filter((m) => {
+    const status = getStatus(m);
+    return status === "graduate";
+});
+
+// SEO
+const seo = {
+    title: "メンバー紹介 | AIU Cedar Society",
+    description:
+        "AIU Cedar Societyを支えるメンバーたちを紹介します。代表をはじめ、企画・運営・広報など様々な役割でメンバーが活動しています。",
+    keywords: "AIU Cedar Society,メンバー紹介,学生,運営メンバー,チーム",
+};
+
+const breadcrumbItems = [
+    { label: "ホーム", href: "/" },
+    { label: "メンバー紹介" },
+];
+---
+
+<Layout seo={seo}>
+    <BreadcrumbSchema items={breadcrumbItems} />
+    <div class="relative min-h-screen">
+        {/* Background with gradient */}
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-[#006837]/3 via-transparent to-gray-100/50 pointer-events-none"
+        >
+        </div>
+        <div
+            class="container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-12 md:pb-20 max-w-5xl"
+        >
+            {/* Back Button */}
+            <a
+                href="/"
+                class="inline-flex items-center text-gray-500 hover:text-[#006837] mb-8 md:mb-12 transition-colors group text-sm font-medium min-h-[44px]"
+            >
+                <svg
+                    class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"></path>
+                </svg>
+                トップに戻る
+            </a>
+
+            {/* Hero Section */}
+            <div class="relative mb-12 md:mb-16">
+                <div class="relative">
+                    <Breadcrumb items={breadcrumbItems} />
+                </div>
+                <div class="relative mb-6">
+                    <div class="absolute top-0 left-0 w-px h-full bg-[#006837]">
+                    </div>
+                    <h1
+                        class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight pl-6"
+                    >
+                        メンバー<span class="text-[#006837]">紹介</span>
+                    </h1>
+                </div>
+                <p
+                    class="text-lg md:text-xl text-gray-600 leading-relaxed pl-6 max-w-2xl"
+                >
+                    AIU Cedar Societyを支えるメンバーたち
+                </p>
+            </div>
+
+            {/* Current Students Section */}
+            {
+                currentMembers.length > 0 && (
+                    <div class="bg-white rounded-lg shadow-md p-8 md:p-10 mb-8">
+                        <div class="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200">
+                            <div class="w-8 h-8 bg-[#006837] bg-opacity-10 rounded-lg flex items-center justify-center">
+                                <svg
+                                    class="w-5 h-5 text-[#006837]"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                                在校生
+                                <span class="text-sm font-normal text-gray-500 ml-3">
+                                    ({currentMembers.length}名)
+                                </span>
+                            </h2>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {currentMembers.map((member) => (
+                                <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow member-card">
+                                    <div class="flex items-start gap-4">
+                                        {member.image ? (
+                                            <img
+                                                src={`${member.image.url}?w=128&fm=webp&q=60`}
+                                                srcset={`${member.image.url}?w=128&fm=webp&q=60 1x, ${member.image.url}?w=256&fm=webp&q=60 2x`}
+                                                alt={member.name}
+                                                width="64"
+                                                height="64"
+                                                loading="lazy"
+                                                decoding="async"
+                                                class="w-16 h-16 rounded-full object-cover shadow-md flex-shrink-0"
+                                            />
+                                        ) : (
+                                            <div class="w-16 h-16 bg-gradient-to-br from-[#006837] to-[#005028] rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                                                <span class="text-white text-xl font-bold">
+                                                    {member.name.substring(
+                                                        0,
+                                                        2,
+                                                    )}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg font-bold text-gray-900 mb-1">
+                                                {member.name}
+                                            </h3>
+                                            <p class="text-sm text-[#006837] font-medium mb-2">
+                                                {member.position} /{" "}
+                                                {member.year}
+                                            </p>
+                                            <p class="text-sm text-gray-600">
+                                                {member.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* Graduate Students Section */}
+            {
+                graduateMembers.length > 0 && (
+                    <div class="bg-white rounded-lg shadow-md p-8 md:p-10 mb-8">
+                        <div class="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200">
+                            <div class="w-8 h-8 bg-gray-600 bg-opacity-10 rounded-lg flex items-center justify-center">
+                                <svg
+                                    class="w-5 h-5 text-gray-600"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 14l9-5-9-5-9 5 9 5z"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+                                    />
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                                卒業生
+                                <span class="text-sm font-normal text-gray-500 ml-3">
+                                    ({graduateMembers.length}名)
+                                </span>
+                            </h2>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            {graduateMembers.map((member) => (
+                                <div class="bg-gray-50 rounded-lg p-6 border-l-4 border-gray-400 hover:shadow-md transition-shadow smooth-hover">
+                                    <div class="flex items-start gap-4">
+                                        {member.image ? (
+                                            <img
+                                                src={`${member.image.url}?w=128&fm=webp&q=60`}
+                                                srcset={`${member.image.url}?w=128&fm=webp&q=60 1x, ${member.image.url}?w=256&fm=webp&q=60 2x`}
+                                                alt={member.name}
+                                                width="64"
+                                                height="64"
+                                                loading="lazy"
+                                                decoding="async"
+                                                class="w-16 h-16 rounded-full object-cover shadow-md flex-shrink-0 grayscale opacity-80"
+                                            />
+                                        ) : (
+                                            <div class="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-700 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                                                <span class="text-white text-xl font-bold">
+                                                    {member.name.substring(
+                                                        0,
+                                                        2,
+                                                    )}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg font-bold text-gray-900 mb-1">
+                                                {member.name}
+                                            </h3>
+                                            <p class="text-sm text-gray-600 font-medium mb-2">
+                                                {member.position} /{" "}
+                                                {member.year}
+                                            </p>
+                                            <p class="text-sm text-gray-600">
+                                                {member.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* Join Us Card */}
+            <div
+                class="bg-gradient-to-br from-[#006837] to-[#005028] text-white rounded-lg p-8 md:p-10 shadow-lg"
+            >
+                <div class="flex items-start gap-4 mb-6">
+                    <div
+                        class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    >
+                        <svg
+                            class="w-6 h-6 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">メンバー募集中</h2>
+                        <p class="text-white opacity-90 mb-6 leading-relaxed">
+                            AIU Cedar
+                            Societyでは、一緒に活動を盛り上げてくれる仲間を募集しています。<br
+                            />
+                            企画・運営・広報など、様々な役割でメンバーを募集中です。興味のある方は、お気軽にお問い合わせください。
+                        </p>
+                        <a
+                            href="/contact"
+                            class="inline-flex items-center gap-2 bg-white text-[#006837] font-bold px-6 py-3 rounded-lg hover:shadow-lg transition-all"
+                        >
+                            <span>お問い合わせ</span>
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+```

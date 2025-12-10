@@ -1,0 +1,655 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getLectures, getUpcomingEvents } from "../library/microcms";
+
+// Fetch lectures (limit to 4 for homepage display)
+const response = await getLectures({
+    fields: [
+        "id",
+        "title",
+        "guest_name",
+        "belonging",
+        "event_date",
+        "description",
+        "eyecatch",
+    ],
+    limit: 100,
+});
+
+// Sort by event_date (newest first) and take top 4
+const lectures = response.contents
+    .sort(
+        (a, b) =>
+            new Date(b.event_date).getTime() - new Date(a.event_date).getTime(),
+    )
+    .slice(0, 4);
+
+// Fetch upcoming events
+const upcomingResponse = await getUpcomingEvents();
+const upcomingEvents = upcomingResponse.contents;
+
+// SEO
+const seo = {
+    title: "AIU Cedar Society - 秋田とAIU生の可能性をつなぐ講演会シリーズ",
+    description:
+        "AIU Cedar Societyは秋田国際教養大学の学生主導の公認団体です。著名なゲストを招いた講演会を通じて、学生と秋田社会をつなぎ、「出会い・学び・実践」のサイクルを創り出します。",
+    keywords:
+        "AIU Cedar Society,秋田国際教養大学,AIU,学生団体,講演会,秋田,イベント,キャリア支援,起業家,地域活性化",
+    ogType: "website" as const,
+};
+---
+
+<Layout seo={seo}>
+    <div
+        class="bg-gradient-to-b from-gray-50 to-white min-h-screen relative overflow-hidden"
+    >
+        {/* Animated Background Gradient with Parallax */}
+        <div
+            id="parallax-bg"
+            class="absolute inset-0 bg-gradient-to-br from-[#006837]/3 via-transparent to-gray-100/50 pointer-events-none"
+            style="will-change: transform;"
+        >
+        </div>
+
+        {/* Hero Section with 3D Depth */}
+        <section
+            class="relative pt-24 md:pt-28 pb-12 md:pb-16 px-4 md:px-6 border-b border-gray-200 hero-3d-container"
+        >
+            <div class="container mx-auto px-4 md:px-6 max-w-5xl">
+                <div class="relative hero-content hero-3d-content">
+                    <div class="relative mb-4 md:mb-6">
+                        <div
+                            class="absolute top-0 left-0 w-px h-full bg-[#006837] hero-line"
+                        >
+                        </div>
+                        <h1
+                            class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight pl-6"
+                        >
+                            <span class="inline-block hero-text-1"
+                                >秋田とAIU生の可能性を</span
+                            ><span
+                                class="text-[#006837] inline-block hero-text-2"
+                                >つなぐ</span
+                            >
+                        </h1>
+                    </div>
+                    <p
+                        class="text-base md:text-lg text-gray-600 leading-relaxed pl-6 max-w-2xl hero-description"
+                    >
+                        AIU Cedar
+                        Societyは、学生の熱意と秋田社会の架け橋となります。<br
+                        />
+                        「出会い・学び・実践」のサイクルを創り出し、秋田の地で新たな価値を生み出していきます。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        {/* Upcoming Events Section */}
+        {
+            upcomingEvents.length > 0 && (
+                <section class="py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white">
+                    <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+                        {/* Section Header */}
+                        <div class="flex items-center justify-between mb-8 md:mb-12">
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 bg-[#006837] bg-opacity-10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg
+                                        class="w-5 h-5 text-[#006837]"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                        />
+                                    </svg>
+                                </div>
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                                    今後の
+                                    <span class="text-[#006837]">予定</span>
+                                </h2>
+                            </div>
+                            <a
+                                href="/events/upcoming"
+                                class="hidden sm:flex items-center gap-2 text-sm font-medium text-[#006837] hover:gap-3 transition-all duration-300"
+                            >
+                                <span>詳細を見る</span>
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 5l7 7-7 7"
+                                    />
+                                </svg>
+                            </a>
+                        </div>
+
+                        {/* Events List */}
+                        <div class="space-y-6">
+                            {upcomingEvents.slice(0, 2).map((event) => (
+                                <div class="border-l-4 border-[#006837] bg-gray-50 p-6 rounded-r-lg">
+                                    <div class="flex items-start gap-4 mb-3">
+                                        <div class="inline-flex items-center gap-2 bg-white border border-gray-200 px-3 py-1.5 rounded-full shadow-sm">
+                                            <svg
+                                                class="w-3.5 h-3.5 text-[#006837]"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                />
+                                            </svg>
+                                            <div class="text-xs font-bold text-[#006837] tracking-wider uppercase">
+                                                {new Date(
+                                                    event.event_date,
+                                                ).toLocaleString("ja-JP", {
+                                                    year: "numeric",
+                                                    month: "long",
+                                                    day: "numeric",
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                    timeZone: "Asia/Tokyo",
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                        {event.title}
+                                    </h3>
+                                    {event.location && (
+                                        <p class="text-sm text-gray-600 mb-3 flex items-center gap-2">
+                                            <svg
+                                                class="w-4 h-4"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                                />
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                                />
+                                            </svg>
+                                            {event.location}
+                                        </p>
+                                    )}
+                                    <div
+                                        class="prose prose-sm max-w-none text-gray-700"
+                                        set:html={event.description}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Mobile View All Button */}
+                        <div class="mt-8 sm:hidden text-center">
+                            <a
+                                href="/events/upcoming"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-[#006837] text-white rounded-lg hover:bg-[#005028] transition-colors duration-300 font-medium"
+                            >
+                                <span>すべての予定を見る</span>
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 5l7 7-7 7"
+                                    />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            )
+        }
+
+        {/* Lecture List */}
+        <main
+            class="container mx-auto px-4 md:px-6 py-12 md:py-16 max-w-6xl relative"
+        >
+            <div
+                class="flex items-center justify-between mb-10 md:mb-14 section-header"
+            >
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-6 h-6 bg-[#006837] bg-opacity-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    >
+                        <svg
+                            class="w-4 h-4 text-[#006837]"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h2
+                        class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight"
+                    >
+                        最近の講演会
+                    </h2>
+                </div>
+                <a
+                    href="/events/past"
+                    class="hidden sm:flex items-center gap-2 text-sm font-medium text-[#006837] hover:gap-3 transition-all duration-300"
+                >
+                    <span>すべて見る</span>
+                    <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+
+            {/* Lecture Cards Grid */}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                {
+                    lectures.map((lecture, index) => (
+                        <a
+                            href={`/lectures/${lecture.id}`}
+                            class="lecture-card block group card-tilt"
+                            style={`animation-delay: ${index * 100}ms`}
+                        >
+                            <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-[#006837] hover:border-opacity-30">
+                                <div class="flex flex-row gap-0">
+                                    {/* Image - モバイルでも横並び、サイズを小さく */}
+                                    <div class="w-24 sm:w-32 md:w-48 flex-shrink-0 relative overflow-hidden bg-gray-100">
+                                        <div class="aspect-[3/4] md:aspect-[210/297]">
+                                            {lecture.eyecatch ? (
+                                                <img
+                                                    src={`${lecture.eyecatch.url}?w=192&fm=webp&q=60`}
+                                                    srcset={`
+                                                        ${lecture.eyecatch.url}?w=96&fm=webp&q=60 96w,
+                                                        ${lecture.eyecatch.url}?w=128&fm=webp&q=60 128w,
+                                                        ${lecture.eyecatch.url}?w=192&fm=webp&q=60 192w,
+                                                        ${lecture.eyecatch.url}?w=256&fm=webp&q=60 256w,
+                                                        ${lecture.eyecatch.url}?w=384&fm=webp&q=60 384w
+                                                    `}
+                                                    sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 192px"
+                                                    alt={lecture.title}
+                                                    width="192"
+                                                    height="256"
+                                                    loading={
+                                                        index < 2
+                                                            ? "eager"
+                                                            : "lazy"
+                                                    }
+                                                    fetchpriority={
+                                                        index === 0
+                                                            ? "high"
+                                                            : "auto"
+                                                    }
+                                                    decoding="async"
+                                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
+                                            ) : (
+                                                <div class="w-full h-full bg-gradient-to-br from-[#006837] to-[#005028] flex items-center justify-center">
+                                                    <svg
+                                                        class="w-10 h-10 md:w-16 md:h-16 text-white opacity-40"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="1.5"
+                                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Content - パディングと間隔を調整 */}
+                                    <div class="flex-1 p-4 sm:p-5 md:p-6 flex flex-col justify-between min-w-0">
+                                        <div>
+                                            <div class="flex items-center gap-2 text-xs text-gray-500 mb-2 md:mb-3">
+                                                <svg
+                                                    class="w-3.5 h-3.5 flex-shrink-0"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                    />
+                                                </svg>
+                                                <span class="truncate">
+                                                    {new Date(
+                                                        lecture.event_date,
+                                                    ).toLocaleDateString(
+                                                        "ja-JP",
+                                                        {
+                                                            year: "numeric",
+                                                            month: "long",
+                                                            day: "numeric",
+                                                        },
+                                                    )}
+                                                </span>
+                                            </div>
+
+                                            <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-1.5 md:mb-2 leading-tight group-hover:text-[#006837] transition-colors line-clamp-2">
+                                                {lecture.title}
+                                            </h3>
+
+                                            <p class="text-sm sm:text-base text-[#006837] font-semibold truncate">
+                                                {lecture.guest_name}氏
+                                            </p>
+                                            {lecture.belonging && (
+                                                <p class="text-xs sm:text-sm text-gray-600 mb-2 md:mb-3 truncate">
+                                                    {lecture.belonging}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div class="flex items-center text-xs sm:text-sm text-[#006837] font-medium">
+                                            <span class="mr-1">詳しく見る</span>
+                                            <svg
+                                                class="w-3.5 h-3.5 sm:w-4 sm:h-4 transform group-hover:translate-x-1 transition-transform"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M9 5l7 7-7 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    ))
+                }
+            </div>
+
+            {/* View All Button - モバイル用 */}
+            <div class="mt-10 md:mt-12 text-center">
+                <a
+                    href="/events/past"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#006837] text-[#006837] font-bold rounded-lg hover:bg-[#006837] hover:text-white transition-all duration-300 shadow-md hover:shadow-lg min-h-[44px]"
+                >
+                    <span>すべての講演会を見る</span>
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+</Layout>
+
+<style>
+    /* Gradient Background Animation */
+    @keyframes gradient-shift {
+        0%,
+        100% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+        }
+        50% {
+            opacity: 0.8;
+            transform: translate(10px, 10px) scale(1.05);
+        }
+    }
+
+    .animate-gradient-shift {
+        animation: gradient-shift 20s ease-in-out infinite;
+    }
+
+    /* Hero Section Animations */
+    .hero-content {
+        animation: fade-in-up 0.8s ease-out;
+    }
+
+    .hero-line {
+        animation: slide-down 0.6s ease-out;
+    }
+
+    .hero-text-1 {
+        animation: fade-in-right 0.8s ease-out 0.3s both;
+    }
+
+    .hero-text-2 {
+        animation: fade-in-right 0.8s ease-out 0.5s both;
+    }
+
+    .hero-description {
+        animation: fade-in 1s ease-out 0.7s both;
+    }
+
+    /* Section Header Animation */
+    .section-header {
+        animation: fade-in-up 0.8s ease-out 0.9s both;
+    }
+
+    /* Lecture Card Animations */
+    .lecture-card {
+        animation: fade-in-up 0.6s ease-out both;
+        opacity: 0;
+    }
+
+    /* Keyframes */
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* 3D Hero Effects */
+    .hero-3d-container {
+        perspective: 1200px;
+        perspective-origin: center center;
+    }
+
+    .hero-3d-content {
+        transform-style: preserve-3d;
+    }
+
+    .hero-3d-content h1 {
+        transform: translateZ(20px);
+        transform-style: preserve-3d;
+    }
+
+    .hero-3d-content p {
+        transform: translateZ(10px);
+    }
+
+    .hero-3d-content .hero-line {
+        transform: translateZ(15px);
+    }
+
+    /* Disable 3D for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        .hero-3d-container {
+            perspective: none;
+        }
+
+        .hero-3d-content,
+        .hero-3d-content h1,
+        .hero-3d-content p,
+        .hero-3d-content .hero-line {
+            transform: none !important;
+        }
+    }
+
+    @keyframes fade-in-right {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slide-down {
+        from {
+            height: 0;
+        }
+        to {
+            height: 100%;
+        }
+    }
+
+    /* Scroll Trigger Animations */
+    .lecture-card.in-view {
+        animation: fade-in-up 0.6s ease-out both;
+    }
+
+    /* Smooth scroll behavior */
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
+    }
+
+    /* Disable animations for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+</style>
+
+<script is:inline>
+    // Parallax Effect for Hero Background with 3D Depth (Passive & Performance Optimized)
+    (function () {
+        const parallaxBg = document.getElementById("parallax-bg");
+        if (!parallaxBg) return;
+
+        let ticking = false;
+
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * 0.3; // Parallax speed (30% of scroll speed)
+
+            // Use transform for GPU acceleration with 3D depth
+            parallaxBg.style.transform = `translateY(${rate}px) translateZ(-30px) scale(1.03)`;
+            ticking = false;
+        }
+
+        function requestTick() {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }
+
+        // Use passive listener for better scroll performance
+        window.addEventListener("scroll", requestTick, { passive: true });
+
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        );
+        if (prefersReducedMotion.matches) {
+            parallaxBg.style.transform = "none";
+            window.removeEventListener("scroll", requestTick);
+        }
+
+        // Cleanup on page navigation
+        document.addEventListener("astro:before-preparation", () => {
+            window.removeEventListener("scroll", requestTick);
+        });
+    })();
+
+    // Scroll-triggered animations using Intersection Observer
+    document.addEventListener("DOMContentLoaded", function () {
+        const observerOptions = {
+            root: null,
+            rootMargin: "0px",
+            threshold: 0.1,
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("in-view");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all lecture cards
+        const cards = document.querySelectorAll(".lecture-card");
+        cards.forEach((card) => {
+            observer.observe(card);
+        });
+    });
+</script>
