@@ -1038,16 +1038,16 @@ const { seo = {} } = Astro.props;
         <script is:inline>
             // Splash Screen Controller
             (function () {
-                const splashShown = sessionStorage.getItem("splashShown");
+                const splashShown = localStorage.getItem("splashShown");
                 const splash = document.getElementById("splash-screen");
 
                 if (splashShown) {
-                    // Already shown in this session, hide immediately
+                    // Already shown before, hide immediately
                     if (splash) {
                         splash.style.display = "none";
                     }
                 } else {
-                    // First visit in this session
+                    // Very first visit ever
                     document.body.classList.add("splash-active");
 
                     // Hide splash after 3 seconds
@@ -1063,8 +1063,8 @@ const { seo = {} } = Astro.props;
                         }
                     }, 3000);
 
-                    // Mark as shown for this session
-                    sessionStorage.setItem("splashShown", "true");
+                    // Mark as shown permanently
+                    localStorage.setItem("splashShown", "true");
                 }
             })();
         </script>
