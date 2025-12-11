@@ -1567,20 +1567,18 @@ const nav = {
 
                 <!-- Menu Content -->
                 <div
-                    class="flex-1 overflow-y-auto px-4 py-6 mobile-menu-content"
+                    class="flex-1 overflow-y-auto px-6 py-6 mobile-menu-content"
                 >
                     <!-- About Section -->
                     <div class="mb-5 menu-section" style="--delay: 0;">
-                        <div class="px-3 mb-2">
+                        <div class="flex items-center gap-3 mb-3 px-2">
+                            <div class="flex-1 h-px bg-gray-200"></div>
                             <span
-                                class="text-xs font-semibold uppercase tracking-wider text-gray-400"
+                                class="text-xs font-bold uppercase tracking-widest text-gray-400"
                             >
-                                {
-                                    currentLang === "en"
-                                        ? "About"
-                                        : "私たちについて"
-                                }
+                                About
                             </span>
+                            <div class="flex-1 h-px bg-gray-200"></div>
                         </div>
                         <div class="space-y-0.5">
                             <a href={l("/about")} class="mobile-menu-link">
@@ -1603,12 +1601,14 @@ const nav = {
 
                     <!-- Events Section -->
                     <div class="mb-5 menu-section" style="--delay: 1;">
-                        <div class="px-3 mb-2">
+                        <div class="flex items-center gap-3 mb-3 px-2">
+                            <div class="flex-1 h-px bg-gray-200"></div>
                             <span
-                                class="text-xs font-semibold uppercase tracking-wider text-gray-400"
+                                class="text-xs font-bold uppercase tracking-widest text-gray-400"
                             >
-                                {currentLang === "en" ? "Events" : "イベント"}
+                                Events
                             </span>
+                            <div class="flex-1 h-px bg-gray-200"></div>
                         </div>
                         <div class="space-y-0.5">
                             <a
@@ -1626,17 +1626,16 @@ const nav = {
                         </div>
                     </div>
 
-                    <!-- Divider -->
-                    <div class="my-4 mx-3 h-px bg-gray-200"></div>
-
-                    <!-- More Links Section -->
+                    <!-- Other Section -->
                     <div class="mb-5 menu-section" style="--delay: 2;">
-                        <div class="px-3 mb-2">
+                        <div class="flex items-center gap-3 mb-3 px-2">
+                            <div class="flex-1 h-px bg-gray-200"></div>
                             <span
-                                class="text-xs font-semibold uppercase tracking-wider text-gray-400"
+                                class="text-xs font-bold uppercase tracking-widest text-gray-400"
                             >
-                                {currentLang === "en" ? "More" : "その他"}
+                                Other
                             </span>
+                            <div class="flex-1 h-px bg-gray-200"></div>
                         </div>
                         <div class="space-y-0.5">
                             <a href={l("/media")} class="mobile-menu-link">
@@ -1659,7 +1658,7 @@ const nav = {
                     </div>
 
                     <!-- Featured: Speaker Request -->
-                    <div class="mt-4 px-2 menu-section" style="--delay: 3;">
+                    <div class="mt-6 menu-section" style="--delay: 3;">
                         <a
                             href={l("/speaker-request")}
                             class="mobile-menu-link-cta"
@@ -1761,7 +1760,7 @@ const nav = {
 
             .mobile-menu-link {
                 display: block;
-                padding: 12px 16px;
+                padding: 12px 14px;
                 border-radius: 10px;
                 font-size: 15px;
                 font-weight: 500;
