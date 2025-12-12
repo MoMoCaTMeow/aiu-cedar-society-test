@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "../styles/animations.css";
 import SEO from "../components/SEO.astro";
 import SchemaOrganization from "../components/SchemaOrganization.astro";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
@@ -203,44 +204,50 @@ const nav = {
             }
         </script>
         <style is:global>
-            /* ===== Ultra-Fast View Transitions ===== */
+            /* ===== Smooth View Transitions ===== */
 
-            /* Instant fade - 50ms */
-            @keyframes instant-fade-out {
+            /* Smooth fade with subtle slide */
+            @keyframes smooth-fade-out {
                 from {
                     opacity: 1;
+                    transform: translateY(0);
                 }
                 to {
                     opacity: 0;
+                    transform: translateY(-8px);
                 }
             }
 
-            @keyframes instant-fade-in {
+            @keyframes smooth-fade-in {
                 from {
                     opacity: 0;
+                    transform: translateY(8px);
                 }
                 to {
                     opacity: 1;
+                    transform: translateY(0);
                 }
             }
 
-            /* Root transition - nearly instant */
+            /* Root transition - smooth and dynamic */
             ::view-transition-old(root) {
-                animation: instant-fade-out 50ms ease-out forwards;
+                animation: smooth-fade-out 1s cubic-bezier(0.4, 0, 0.2, 1)
+                    forwards;
             }
 
             ::view-transition-new(root) {
-                animation: instant-fade-in 80ms ease-out forwards;
+                animation: smooth-fade-in 1.5s cubic-bezier(0.16, 1, 0.3, 1)
+                    forwards;
             }
 
-            /* Breadcrumb - instant */
+            /* Breadcrumb - slightly faster */
             .breadcrumb-nav {
                 view-transition-name: breadcrumb;
             }
 
             ::view-transition-old(breadcrumb),
             ::view-transition-new(breadcrumb) {
-                animation-duration: 50ms;
+                animation-duration: 300ms;
             }
 
             /* Prevent overflow during transitions */
@@ -248,10 +255,20 @@ const nav = {
                 overflow: hidden;
             }
 
-            /* All groups - instant */
+            /* All groups - smooth timing */
             ::view-transition-group(*) {
-                animation-duration: 80ms;
-                animation-timing-function: ease-out;
+                animation-duration: 1.5s;
+                animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            /* Allow interaction during transitions */
+            ::view-transition-new(root),
+            ::view-transition-old(root) {
+                pointer-events: auto;
+            }
+
+            html::view-transition {
+                pointer-events: auto;
             }
 
             /* Enhanced motion sensitivity support */
@@ -2278,4 +2295,48 @@ const nav = {
         },
         { passive: true },
     );
+
+    // ===========================================
+    // SCROLL ANIMATIONS - Intersection Observer
+    // ===========================================
+    function initScrollAnimations() {
+        const animatedElements = document.querySelectorAll("[data-animate]");
+
+        if (animatedElements.length === 0) return;
+
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        if (prefersReducedMotion) {
+            // Immediately show all elements without animation
+            animatedElements.forEach((el) =>
+                el.classList.add("animate-visible"),
+            );
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("animate-visible");
+                        // Unobserve after animation to improve performance
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px",
+            },
+        );
+
+        animatedElements.forEach((el) => observer.observe(el));
+    }
+
+    // Initialize on page load and after View Transitions
+    initScrollAnimations();
+    document.addEventListener("astro:page-load", initScrollAnimations);
 </script>

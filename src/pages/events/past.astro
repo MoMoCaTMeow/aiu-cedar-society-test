@@ -79,7 +79,7 @@ const breadcrumbItems = [
             </a>
 
             {/* Hero Section */}
-            <div class="relative mb-12 md:mb-16">
+            <div class="relative mb-12 md:mb-16" data-animate>
                 <div class="relative mb-6">
                     <div class="absolute top-0 left-0 w-px h-full bg-[#006837]">
                     </div>
@@ -99,6 +99,8 @@ const breadcrumbItems = [
             {/* Search and Filter Section */}
             <div
                 class="mb-8 md:mb-12 bg-white rounded-lg shadow-md p-4 md:p-6 border border-gray-200"
+                data-animate
+                data-animate-delay="1"
             >
                 <div class="flex flex-col md:flex-row gap-4">
                     {/* Search Input */}
@@ -162,7 +164,10 @@ const breadcrumbItems = [
                 years.map((year) => (
                     <div class="mb-16 md:mb-20" data-year-section={year}>
                         {/* Year Header */}
-                        <div class="flex items-center gap-4 mb-6 md:mb-8">
+                        <div
+                            class="flex items-center gap-4 mb-6 md:mb-8"
+                            data-animate
+                        >
                             <div class="flex items-center gap-3">
                                 <div class="w-1 h-8 bg-[#006837] rounded-full" />
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
@@ -186,7 +191,7 @@ const breadcrumbItems = [
                                     data-guest={lecture.guest_name}
                                     data-year={year.toString()}
                                 >
-                                    <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#006837] hover:border-opacity-30 lecture-card">
+                                    <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#006837] hover:border-opacity-30 lecture-card hover-lift">
                                         <div class="flex flex-row gap-0">
                                             {/* Image - モバイルでも横並び、サイズを小さく */}
                                             <div class="w-24 sm:w-32 md:w-48 flex-shrink-0 relative overflow-hidden bg-gray-100">

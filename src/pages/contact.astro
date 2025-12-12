@@ -21,7 +21,7 @@ const breadcrumbItems = [
     <BreadcrumbSchema items={breadcrumbItems} />
     <div class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
         <div
-            class="container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-12 md:pb-20 max-w-3xl"
+            class="container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-12 md:pb-20 max-w-5xl"
         >
             <Breadcrumb items={breadcrumbItems} />
             {/* Back Button */}
@@ -45,7 +45,7 @@ const breadcrumbItems = [
             </a>
 
             {/* Hero Section */}
-            <div class="relative mb-12 md:mb-16">
+            <div class="relative mb-12 md:mb-16" data-animate>
                 <div class="relative mb-6">
                     <div class="absolute top-0 left-0 w-px h-full bg-[#006837]">
                     </div>
@@ -63,7 +63,11 @@ const breadcrumbItems = [
             </div>
 
             {/* Contact Form Card */}
-            <div class="bg-white rounded-lg shadow-md p-6 md:p-10">
+            <div
+                class="bg-white rounded-lg shadow-md p-6 md:p-10"
+                data-animate
+                data-animate-delay="1"
+            >
                 <div
                     class="flex items-center gap-3 mb-8 pb-6 border-b border-gray-200"
                 >

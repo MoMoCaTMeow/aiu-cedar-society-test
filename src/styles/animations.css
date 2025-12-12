@@ -1,0 +1,253 @@
+/**
+ * Scroll Animations & Microinteractions
+ * 
+ * Performance-focused animations using CSS transforms and opacity only.
+ * Respects prefers-reduced-motion for accessibility.
+ */
+
+/* ================================
+   SCROLL ANIMATIONS
+   ================================ */
+
+/* Base state for animated elements */
+[data-animate] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: 
+        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+/* Visible state */
+[data-animate].animate-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger delays for sequential animations */
+[data-animate-delay="1"] { transition-delay: 0.1s; }
+[data-animate-delay="2"] { transition-delay: 0.2s; }
+[data-animate-delay="3"] { transition-delay: 0.3s; }
+[data-animate-delay="4"] { transition-delay: 0.4s; }
+[data-animate-delay="5"] { transition-delay: 0.5s; }
+
+/* Animation variants */
+[data-animate="fade"] {
+    transform: none;
+}
+
+[data-animate="slide-left"] {
+    transform: translateX(-24px);
+}
+
+[data-animate="slide-right"] {
+    transform: translateX(24px);
+}
+
+[data-animate="scale"] {
+    transform: scale(0.95);
+}
+
+[data-animate="slide-left"].animate-visible,
+[data-animate="slide-right"].animate-visible,
+[data-animate="scale"].animate-visible {
+    transform: translateX(0) scale(1);
+}
+
+/* ================================
+   MICROINTERACTIONS - CARD HOVER
+   ================================ */
+
+.hover-lift {
+    transition: 
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 12px 24px -8px rgba(0, 0, 0, 0.1),
+        0 4px 8px -4px rgba(0, 0, 0, 0.06);
+}
+
+.hover-lift:active {
+    transform: translateY(-2px);
+}
+
+/* ================================
+   MICROINTERACTIONS - BUTTON RIPPLE
+   ================================ */
+
+.ripple-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+    pointer-events: none;
+}
+
+.ripple-container:active::after {
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    transition: width 0s, height 0s, opacity 0.6s ease;
+}
+
+/* Alternative: Pure CSS ripple on click */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0);
+}
+
+.btn-ripple::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.8s;
+}
+
+.btn-ripple:active::before {
+    transform: scale(0, 0);
+    opacity: 1;
+    transition: 0s;
+}
+
+/* ================================
+   MICROINTERACTIONS - ICON BOUNCE
+   ================================ */
+
+.icon-bounce {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.icon-bounce:hover {
+    transform: scale(1.1);
+}
+
+.icon-bounce:active {
+    transform: scale(0.95);
+}
+
+/* ================================
+   SUCCESS ANIMATION (CHECKMARK)
+   ================================ */
+
+@keyframes checkmark-draw {
+    0% {
+        stroke-dashoffset: 50;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes success-pop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-checkmark {
+    animation: success-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.success-checkmark svg path {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: checkmark-draw 0.4s ease 0.2s forwards;
+}
+
+/* ================================
+   FOCUS RING ANIMATION
+   ================================ */
+
+.focus-ring {
+    outline: none;
+    position: relative;
+}
+
+.focus-ring::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    border: 2px solid #006837;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+.focus-ring:focus-visible::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ================================
+   ACCESSIBILITY - REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-animate],
+    [data-animate].animate-visible,
+    .hover-lift,
+    .icon-bounce,
+    .btn-ripple::before,
+    .ripple-container::after {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+    
+    .success-checkmark,
+    .success-checkmark svg path {
+        animation: none !important;
+        stroke-dashoffset: 0 !important;
+    }
+}
+
+/* ================================
+   PERFORMANCE - CSS CONTAINMENT
+   ================================ */
+
+.contain-layout {
+    contain: layout style;
+}
+
+.contain-paint {
+    contain: paint;
+}

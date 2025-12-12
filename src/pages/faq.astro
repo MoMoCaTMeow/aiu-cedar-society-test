@@ -31,7 +31,7 @@ const breadcrumbItems = [
     <BreadcrumbSchema items={breadcrumbItems} />
     <div class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
         <div
-            class="container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-12 md:pb-20 max-w-4xl"
+            class="container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-12 md:pb-20 max-w-5xl"
         >
             <Breadcrumb items={breadcrumbItems} />
             {/* Back Button */}
@@ -55,7 +55,7 @@ const breadcrumbItems = [
             </a>
 
             {/* Hero Section */}
-            <div class="relative mb-12 md:mb-16">
+            <div class="relative mb-12 md:mb-16" data-animate>
                 <div class="relative mb-6">
                     <div class="absolute top-0 left-0 w-px h-full bg-[#006837]">
                     </div>
@@ -77,7 +77,11 @@ const breadcrumbItems = [
                 {
                     faqs.length > 0 ? (
                         faqs.map((faq, index) => (
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
+                            <div
+                                class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover-lift"
+                                data-animate
+                                data-animate-delay={Math.min(index + 1, 5)}
+                            >
                                 <button
                                     class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
                                     aria-expanded="false"
