@@ -348,7 +348,7 @@ const breadcrumbItems = [
             );
 
             lectureCards.forEach((card) => {
-                const cardElement = card as HTMLElement;
+                const cardElement = card;
                 const title = cardElement.dataset.title?.toLowerCase() || "";
                 const guest = cardElement.dataset.guest?.toLowerCase() || "";
                 const year = cardElement.dataset.year || "";
@@ -370,11 +370,11 @@ const breadcrumbItems = [
 
             // Update year sections visibility
             yearSections.forEach((section) => {
-                const sectionElement = section as HTMLElement;
+                const sectionElement = section;
                 const sectionYear = sectionElement.dataset.yearSection;
                 const visibleInSection = Array.from(lectureCards).filter(
                     (card) => {
-                        const cardElement = card as HTMLElement;
+                        const cardElement = card;
                         return (
                             cardElement.dataset.year === sectionYear &&
                             cardElement.style.display !== "none"
@@ -432,4 +432,5 @@ const breadcrumbItems = [
         });
     });
 </script>
-```
+
+

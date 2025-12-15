@@ -322,11 +322,11 @@ const breadcrumbItems = [
                 document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
 
-            const progressBar = document.querySelector(
-                ".reading-progress-bar",
-            ) as HTMLElement;
+      const progressBar = document.querySelector(
+        ".reading-progress-bar",
+      );
             if (progressBar) {
-                progressBar.style.width = scrolled + "%";
+        (progressBar as any).style.width = scrolled + "%";
             }
         },
         { passive: true },

@@ -34,6 +34,17 @@ const t = useTranslations(currentLang);
 // Helper to get localized path
 const l = (path: string) => getLocalizedPath(path, currentLang);
 
+// Active state helper for navigation
+const pathname = Astro.url.pathname;
+const isActive = (path: string) => {
+    const target = getLocalizedPath(path, currentLang);
+    return (
+        pathname === target ||
+        pathname === `${target}/` ||
+        pathname.startsWith(`${target}/`)
+    );
+};
+
 // Navigation labels based on language
 const nav = {
     about: currentLang === "en" ? "About" : "About",
@@ -410,6 +421,8 @@ const nav = {
                 --z-modal: 50;
                 --z-popover: 60;
                 --z-tooltip: 70;
+                /* Scroll reactive background */
+                --scroll-bg-strength: 0;
             }
 
             [data-theme="dark"] {
@@ -440,6 +453,28 @@ const nav = {
                 transition:
                     background-color 0.3s ease,
                     color 0.3s ease;
+            }
+
+            /* Subtle scroll-reactive background overlay */
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: -1;
+                background:
+                    radial-gradient(
+                        circle at 10% 0%,
+                        rgba(0, 104, 55, 0.16) 0,
+                        transparent 55%
+                    ),
+                    radial-gradient(
+                        circle at 90% 100%,
+                        rgba(0, 168, 85, 0.18) 0,
+                        transparent 55%
+                    );
+                opacity: calc(0.15 + var(--scroll-bg-strength, 0) * 0.5);
+                transition: opacity 0.25s ease-out;
             }
 
             /* Comprehensive Dark Mode Styles - macOS Inspired */
@@ -1239,7 +1274,7 @@ const nav = {
                         <!-- About Dropdown -->
                         <div class="relative dropdown-container">
                             <button
-                                class="dropdown-button inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                                class="dropdown-button nav-link inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
                                 style="gap: 0.375rem;"
                             >
                                 About
@@ -1281,7 +1316,7 @@ const nav = {
                         <!-- Events Dropdown -->
                         <div class="relative dropdown-container">
                             <button
-                                class="dropdown-button inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                                class="dropdown-button nav-link inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
                                 style="gap: 0.375rem;"
                             >
                                 Events
@@ -1318,27 +1353,32 @@ const nav = {
                         <!-- Media -->
                         <a
                             href={l("/media")}
-                            class="text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                            class="nav-link"
+                            data-active={isActive("/media")}
                             >{nav.media}</a
                         ><!-- FAQ -->
                         <a
                             href={l("/faq")}
-                            class="text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                            class="nav-link"
+                            data-active={isActive("/faq")}
                             >{nav.faq}</a
                         ><!-- Sponsors -->
                         <a
                             href={l("/sponsors")}
-                            class="text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                            class="nav-link"
+                            data-active={isActive("/sponsors")}
                             >{nav.sponsors}</a
                         ><!-- Contact -->
                         <a
                             href={l("/contact")}
-                            class="text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                            class="nav-link"
+                            data-active={isActive("/contact")}
                             >{nav.contact}</a
                         ><!-- Speaker Request -->
                         <a
                             href={l("/speaker-request")}
-                            class="text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                            class="nav-link"
+                            data-active={isActive("/speaker-request")}
                             >Request</a
                         >
                     </nav>
@@ -1456,7 +1496,9 @@ const nav = {
                 font-size: 13px !important;
                 font-weight: 500 !important;
                 color: #4b5563 !important;
-                transition: color 0.2s ease !important;
+                transition:
+                    color 0.2s ease !important,
+                    opacity 0.2s ease !important;
                 white-space: nowrap !important;
                 line-height: 1.5 !important;
                 height: 40px !important;
@@ -1476,6 +1518,38 @@ const nav = {
             header nav a:hover,
             header nav .dropdown-button:hover {
                 color: #006837 !important;
+            }
+
+            /* Hover/active underline for nav */
+            .nav-link {
+                position: relative;
+                padding-bottom: 6px !important;
+            }
+
+            .nav-link::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                height: 2px;
+                width: 100%;
+                background: linear-gradient(90deg, #006837, #00a855);
+                transform: scaleX(0);
+                transform-origin: left;
+                transition: transform 0.24s cubic-bezier(0.33, 1, 0.68, 1);
+            }
+
+            .nav-link:hover::after {
+                transform: scaleX(1);
+            }
+
+            .nav-link[data-active="true"] {
+                color: #006837 !important;
+                font-weight: 600 !important;
+            }
+
+            .nav-link[data-active="true"]::after {
+                transform: scaleX(1);
             }
 
             header nav .dropdown-button {
@@ -1538,17 +1612,16 @@ const nav = {
             }
         </style>
 
-        <!-- Mobile Menu Panel - Premium Glass Design -->
+        <!-- Mobile Menu Panel - Premium Glass Bottom Sheet Design -->
         <div
             id="mobile-menu"
-            class="fixed inset-y-0 right-0 z-50 transform translate-x-full transition-all duration-300 ease-out md:hidden"
-            style="width: 75%; transition-duration: 250ms;"
+            class="fixed inset-0 z-50 transform translate-x-full opacity-0 pointer-events-none transition-all duration-300 ease-out md:hidden"
         >
-            <!-- Gradient Glass Background -->
+            <!-- Backdrop -->
             <div class="absolute inset-0 mobile-menu-bg"></div>
 
             <!-- Content Container -->
-            <div class="relative h-full flex flex-col">
+            <div class="relative h-full flex flex-col mobile-menu-panel">
                 <!-- Header -->
                 <div
                     class="flex h-20 items-center justify-between px-6 mobile-menu-header"
@@ -1731,21 +1804,47 @@ const nav = {
         </div>
 
         <style>
-            /* Premium Mobile Menu Styles */
+            /* Premium Mobile Menu Styles - Bottom Sheet */
+            #mobile-menu.translate-x-0 {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
             .mobile-menu-bg {
+                background: rgba(0, 0, 0, 0.35);
+                backdrop-filter: blur(18px) saturate(140%);
+                -webkit-backdrop-filter: blur(18px) saturate(140%);
+                opacity: 0;
+                transition: opacity 0.25s ease-out;
+            }
+
+            #mobile-menu.translate-x-0 .mobile-menu-bg {
+                opacity: 1;
+            }
+
+            .mobile-menu-panel {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                max-height: 80vh;
                 background: linear-gradient(
-                    135deg,
-                    rgba(255, 255, 255, 0.95) 0%,
-                    rgba(249, 250, 251, 0.98) 50%,
-                    rgba(255, 255, 255, 0.95) 100%
+                    145deg,
+                    rgba(255, 255, 255, 0.98),
+                    rgba(249, 250, 251, 0.98)
                 );
-                backdrop-filter: blur(40px) saturate(180%);
-                -webkit-backdrop-filter: blur(40px) saturate(180%);
-                border-left: 1px solid rgba(255, 255, 255, 0.6);
+                border-radius: 24px 24px 0 0;
                 box-shadow:
-                    -20px 0 60px rgba(0, 0, 0, 0.1),
-                    -5px 0 20px rgba(0, 0, 0, 0.05),
-                    inset 1px 0 0 rgba(255, 255, 255, 0.5);
+                    0 -12px 40px rgba(15, 23, 42, 0.35),
+                    0 -2px 0 rgba(255, 255, 255, 0.6);
+                transform: translateY(100%);
+                transition: transform 0.25s
+                    cubic-bezier(0.22, 1, 0.36, 1);
+                overflow: hidden;
+            }
+
+            #mobile-menu.translate-x-0 .mobile-menu-panel {
+                transform: translateY(0);
             }
 
             .mobile-menu-header {
@@ -2228,6 +2327,18 @@ const nav = {
             });
         });
 
+        // Close when tapping backdrop
+        const backdrop = freshMobileMenu.querySelector(".mobile-menu-bg");
+        if (backdrop) {
+            backdrop.addEventListener(
+                "click",
+                () => {
+                    closeMenu();
+                },
+                { passive: true },
+            );
+        }
+
         // Swipe to close
         let startX = null;
         const threshold = 40;
@@ -2424,12 +2535,13 @@ const nav = {
         document.addEventListener("astro:page-load", hide);
     })();
 
-    // Back to Top Button Handler
+    // Back to Top Button Handler + scroll-reactive background
     window.addEventListener(
         "scroll",
         function () {
             const backToTopBtn = document.getElementById("back-to-top");
-            if (backToTopBtn) {
+            const rootEl = document.documentElement;
+            if (backToTopBtn && rootEl) {
                 if (window.scrollY > 300) {
                     backToTopBtn.classList.remove("opacity-0", "invisible");
                     backToTopBtn.classList.add("opacity-100", "visible");
@@ -2448,6 +2560,15 @@ const nav = {
                 backToTopBtn.style.setProperty(
                     "--scroll-progress",
                     progress.toString(),
+                );
+                // update scroll background strength (0–1)
+                const strength = Math.min(
+                    1,
+                    Math.max(0, progress / 100),
+                );
+                rootEl.style.setProperty(
+                    "--scroll-bg-strength",
+                    strength.toFixed(2),
                 );
             }
         },

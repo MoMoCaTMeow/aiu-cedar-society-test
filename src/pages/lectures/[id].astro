@@ -299,12 +299,13 @@ const breadcrumbItems = [
 
       const progressBar = document.querySelector(
         ".reading-progress-bar",
-      ) as HTMLElement;
+      );
       if (progressBar) {
-        progressBar.style.width = scrolled + "%";
+        (progressBar as any).style.width = scrolled + "%";
       }
     },
     { passive: true },
   );
 </script>
-```
+
+
