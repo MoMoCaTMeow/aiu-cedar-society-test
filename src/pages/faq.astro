@@ -116,7 +116,7 @@ const breadcrumbItems = [
                                     data-content={index}
                                     aria-hidden="true"
                                 >
-                                    <div class="flex items-start gap-4 pl-0">
+                                    <div class="faq-content-inner flex items-center gap-4 pl-0">
                                         <span class="flex-shrink-0 w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-sm">
                                             A
                                         </span>
@@ -207,7 +207,7 @@ const breadcrumbItems = [
             // Normalize any leftover padding classes from previous versions
             contents.forEach((c) => {
                 c.classList.remove("pb-0", "pb-5");
-                c.setAttribute("style", "max-height:0px;");
+                c.style.maxHeight = "0px";
                 c.setAttribute("aria-hidden", "true");
             });
 
@@ -226,9 +226,8 @@ const breadcrumbItems = [
                             // animate close (from current height to 0)
                             const currentH = content.scrollHeight;
                             content.style.maxHeight = `${currentH}px`;
-                            requestAnimationFrame(() => {
-                                content.style.maxHeight = "0px";
-                            });
+                            void content.offsetHeight;
+                            content.style.maxHeight = "0px";
                         } else {
                             content.style.maxHeight = "0px";
                         }
@@ -258,23 +257,32 @@ const breadcrumbItems = [
                     if (content) {
                         content.setAttribute("aria-hidden", String(!nextState));
                         if (nextState) {
-                            // open styles first so padding is included in scrollHeight
                             card?.classList.add("faq-open");
-                            // animate open
-                            requestAnimationFrame(() => {
-                                content.style.maxHeight = "0px";
-                                // double-rAF ensures layout has applied open padding before measuring
-                                requestAnimationFrame(() => {
-                                    const h = content.scrollHeight;
-                                    content.style.maxHeight = `${h}px`;
-                                });
-                            });
+                            // animate open (single phase)
+                            content.style.maxHeight = "0px";
+                            void content.offsetHeight;
+                            const h = content.scrollHeight;
+                            content.style.maxHeight = `${h}px`;
+
+                            // after animation, release max-height so layout is always correct
+                            const onEnd = (ev) => {
+                                if (ev.propertyName !== "max-height") return;
+                                content.removeEventListener("transitionend", onEnd);
+                                if (button.getAttribute("aria-expanded") === "true") {
+                                    content.style.maxHeight = "none";
+                                }
+                            };
+                            content.addEventListener("transitionend", onEnd);
                         } else {
+                            // if max-height was released, restore to scrollHeight before closing
+                            if (content.style.maxHeight === "none") {
+                                content.style.maxHeight = `${content.scrollHeight}px`;
+                                void content.offsetHeight;
+                            }
                             const currentH = content.scrollHeight;
                             content.style.maxHeight = `${currentH}px`;
-                            requestAnimationFrame(() => {
-                                content.style.maxHeight = "0px";
-                            });
+                            void content.offsetHeight;
+                            content.style.maxHeight = "0px";
                             if (card) {
                                 setTimeout(
                                     () => card.classList.remove("faq-open"),
@@ -317,16 +325,23 @@ const breadcrumbItems = [
         gap: 12px;
     }
 
-    /* Answer padding: only when open (so closed state shows question only) */
     .faq-content {
-        padding-top: 0;
-        padding-bottom: 0;
         transition: max-height 300ms ease-out;
         will-change: max-height;
     }
-    .faq-card.faq-open .faq-content {
+
+    /* Keep answer padding inside so open doesn't feel like a 2-step jump */
+    .faq-content-inner {
         padding-top: 1rem;
         padding-bottom: 1rem;
+    }
+
+    /* Remove default margins from typography plugin for better vertical centering */
+    .faq-content-inner .prose > :first-child {
+        margin-top: 0 !important;
+    }
+    .faq-content-inner .prose > :last-child {
+        margin-bottom: 0 !important;
     }
 
     .faq-button:hover {
