@@ -3073,7 +3073,8 @@ const nav = {
             );
         }
 
-        // Swipe to close
+        // Swipe to close (downward, and only when content is at the top to avoid accidental closes while scrolling)
+        const menuContent = freshMobileMenu?.querySelector(".mobile-menu-content");
         let startY = null;
         const threshold = 40;
         freshMobileMenu?.addEventListener(
@@ -3088,8 +3089,9 @@ const nav = {
             (e) => {
                 if (startY === null) return;
                 const deltaY = e.touches[0].clientY - startY;
-                // Swipe up closes the menu
-                if (deltaY < -threshold) {
+                const contentAtTop = !menuContent || menuContent.scrollTop <= 0;
+                // Swipe down closes the menu (common bottom-sheet behavior)
+                if (deltaY > threshold && contentAtTop) {
                     closeMenu();
                     startY = null;
                 }
