@@ -1659,26 +1659,6 @@ const nav = {
                                 </div>
                             </div>
                         </div>
-                        <button
-                            type="button"
-                            class="mobile-menu-close-inline"
-                            data-mobile-menu-close
-                            aria-label={currentLang === "en" ? "Close menu" : "メニューを閉じる"}
-                        >
-                            <svg
-                                class="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2.5"
-                                    d="M6 18L18 6M6 6l12 12"
-                                ></path>
-                            </svg>
-                        </button>
                     </div>
                 </div>
 
@@ -1727,17 +1707,17 @@ const nav = {
                                     <span class="mobile-menu-item-arrow" aria-hidden="true">
                                         <svg
                                             class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
                                             stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
                                                 d="M9 5l7 7-7 7"
                                             ></path>
-                                        </svg>
+                            </svg>
                                     </span>
                                 </a>
                                 <a
@@ -1747,7 +1727,7 @@ const nav = {
                                     <div class="mobile-menu-item-main">
                                         <div class="mobile-menu-item-title">
                                             {nav.past}
-                                        </div>
+                    </div>
                                         <div class="mobile-menu-item-desc">
                                             {currentLang === "en" ? "Archive of past lectures" : "過去の講演会アーカイブ"}
                                         </div>
@@ -1755,32 +1735,32 @@ const nav = {
                                     <span class="mobile-menu-item-arrow" aria-hidden="true">
                                         <svg
                                             class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
+                            fill="none"
+                            viewBox="0 0 24 24"
                                             stroke="currentColor"
                                             stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
                                                 d="M9 5l7 7-7 7"
                                             ></path>
-                                        </svg>
+                        </svg>
                                     </span>
                                 </a>
                             </nav>
-                        </div>
+                </div>
 
                         <!-- About -->
                         <div class="menu-section" style="--delay: 2;">
                             <div class="mobile-menu-group-title">
                                 {currentLang === "en" ? "About" : "団体について"}
-                            </div>
+                        </div>
                             <nav class="mobile-menu-list" aria-label={currentLang === "en" ? "About" : "団体について"}>
                                 <a href={l("/about")} class="mobile-menu-item">
                                     <div class="mobile-menu-item-main">
                                         <div class="mobile-menu-item-title">
-                                            {nav.aboutUs}
+                                {nav.aboutUs}
                                         </div>
                                         <div class="mobile-menu-item-desc">
                                             {currentLang === "en" ? "Mission & overview" : "ミッション・概要"}
@@ -1831,10 +1811,10 @@ const nav = {
                                     <div class="mobile-menu-item-main">
                                         <div class="mobile-menu-item-title">
                                             {nav.members}
-                                        </div>
+                        </div>
                                         <div class="mobile-menu-item-desc">
                                             {currentLang === "en" ? "Meet the team" : "メンバー紹介"}
-                                        </div>
+                    </div>
                                     </div>
                                     <span class="mobile-menu-item-arrow" aria-hidden="true">
                                         <svg
@@ -1850,7 +1830,7 @@ const nav = {
                                                 d="M9 5l7 7-7 7"
                                             ></path>
                                         </svg>
-                                    </span>
+                            </span>
                                 </a>
                             </nav>
                         </div>
@@ -1890,10 +1870,10 @@ const nav = {
                                     <div class="mobile-menu-item-main">
                                         <div class="mobile-menu-item-title">
                                             FAQ
-                                        </div>
+                        </div>
                                         <div class="mobile-menu-item-desc">
                                             {currentLang === "en" ? "Frequently asked questions" : "よくあるご質問"}
-                                        </div>
+                    </div>
                                     </div>
                                     <span class="mobile-menu-item-arrow" aria-hidden="true">
                                         <svg
@@ -1909,16 +1889,16 @@ const nav = {
                                                 d="M9 5l7 7-7 7"
                                             ></path>
                                         </svg>
-                                    </span>
+                            </span>
                                 </a>
                                 <a href={l("/sponsors")} class="mobile-menu-item">
                                     <div class="mobile-menu-item-main">
                                         <div class="mobile-menu-item-title">
-                                            {currentLang === "en" ? "Sponsors" : "協賛企業"}
-                                        </div>
+                                {currentLang === "en" ? "Sponsors" : "協賛企業"}
+                        </div>
                                         <div class="mobile-menu-item-desc">
                                             {currentLang === "en" ? "Partners supporting our activities" : "協賛企業・パートナー"}
-                                        </div>
+                    </div>
                                     </div>
                                     <span class="mobile-menu-item-arrow" aria-hidden="true">
                                         <svg
@@ -1948,19 +1928,19 @@ const nav = {
                                     <span class="mobile-menu-item-arrow" aria-hidden="true">
                                         <svg
                                             class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
                                             stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
                                                 d="M9 5l7 7-7 7"
                                             ></path>
-                                        </svg>
+                            </svg>
                                     </span>
-                                </a>
+                        </a>
                             </nav>
                         </div>
                     </div>
@@ -1981,6 +1961,21 @@ const nav = {
             /* Premium Mobile Menu Styles - Bottom Sheet */
             body.mobile-menu-open {
                 overflow: hidden;
+                /* Prevent layout shift when scrollbar disappears */
+                padding-right: var(--scrollbar-comp, 0px);
+            }
+
+            /* Keep fixed header aligned when scrollbar compensation is applied */
+            body.mobile-menu-open #site-header {
+                padding-right: var(--scrollbar-comp, 0px) !important;
+            }
+
+            /* Keep fixed corner buttons aligned as well */
+            body.mobile-menu-open #feedback-button {
+                right: calc(1.5rem + var(--scrollbar-comp, 0px)) !important;
+            }
+            body.mobile-menu-open #back-to-top {
+                right: calc(1.5rem + var(--scrollbar-comp, 0px)) !important;
             }
 
             /* Toggle icon (hamburger -> X) */
@@ -2013,6 +2008,11 @@ const nav = {
             #mobile-menu-button.is-open .icon-hamburger {
                 opacity: 0;
                 transform: scale(0.9) rotate(45deg);
+            }
+
+            /* Make the close (X) icon green when open */
+            #mobile-menu-button.is-open {
+                color: #006837 !important;
             }
 
             /* Open/close */
@@ -2083,6 +2083,9 @@ const nav = {
                 align-items: center;
                 justify-content: space-between;
                 gap: 12px;
+                transition:
+                    opacity 220ms ease,
+                    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
             }
 
             .mobile-menu-brand {
@@ -2132,23 +2135,7 @@ const nav = {
                 text-transform: uppercase;
             }
 
-            .mobile-menu-close-inline {
-                width: 44px;
-                height: 44px;
-                border-radius: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: rgba(0, 0, 0, 0.04);
-                border: 1px solid rgba(0, 0, 0, 0.06);
-                color: rgba(0, 0, 0, 0.6);
-                transition: transform 180ms ease, background 180ms ease;
-                flex-shrink: 0;
-            }
-
-            .mobile-menu-close-inline:active {
-                transform: scale(0.97);
-            }
+            /* (removed) in-menu close button */
 
             .mobile-menu-inner {
                 padding: 16px 20px 20px;
@@ -2266,12 +2253,33 @@ const nav = {
                 opacity: 0;
                 transform: translateY(10px);
                 transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-                transition-delay: calc(var(--delay) * 0.1s);
+                transition-delay: 0s;
             }
 
             #mobile-menu.is-open .menu-section {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateY(0);
+                transition-delay: calc(var(--delay) * 0.1s);
+            }
+
+            /* Reverse stagger on close */
+            .mobile-menu-inner {
+                --menu-stagger-count: 3; /* max --delay used in markup */
+            }
+
+            #mobile-menu.is-closing .menu-section {
+                opacity: 0;
+                transform: translateY(10px);
+                transition-delay: calc(
+                    (var(--menu-stagger-count, 3) - var(--delay)) * 0.1s
+                );
+            }
+
+            /* Fade out header (logo area) near the end of close to avoid “hitch” */
+            #mobile-menu.is-closing .mobile-menu-header-inner {
+                opacity: 0;
+                transform: translateY(-6px);
+                transition-delay: 420ms;
             }
 
             /* Scrollbar styling */
@@ -2944,20 +2952,40 @@ const nav = {
         // Get fresh references
         const freshMenuButton = document.getElementById("mobile-menu-button");
         const freshMobileMenu = document.getElementById("mobile-menu");
+        let closeStageTimer = null;
+        let closeFinalizeTimer = null;
 
         function isOpen() {
             return !!freshMobileMenu?.classList.contains("is-open");
         }
 
         function openMenu() {
+            if (closeStageTimer) {
+                clearTimeout(closeStageTimer);
+                closeStageTimer = null;
+            }
+            if (closeFinalizeTimer) {
+                clearTimeout(closeFinalizeTimer);
+                closeFinalizeTimer = null;
+            }
             if (freshMobileMenu) {
+                freshMobileMenu.classList.remove("is-closing");
                 freshMobileMenu.classList.add("is-open");
                 freshMobileMenu.setAttribute("aria-hidden", "false");
             }
+            // Compensate for scrollbar width to avoid layout shift
+            const scrollbarWidth = Math.max(
+                0,
+                window.innerWidth - document.documentElement.clientWidth,
+            );
+            document.documentElement.style.setProperty(
+                "--scrollbar-comp",
+                `${scrollbarWidth}px`,
+            );
             document.body.classList.add("mobile-menu-open");
             if (freshMenuButton) {
                 freshMenuButton.classList.add("is-open");
-                freshMenuButton.setAttribute("aria-expanded", "true");
+                    freshMenuButton.setAttribute("aria-expanded", "true");
                 freshMenuButton.setAttribute(
                     "aria-label",
                     document.documentElement.lang === "en"
@@ -2968,21 +2996,46 @@ const nav = {
         }
 
         function closeMenu() {
+            if (closeStageTimer || closeFinalizeTimer) return; // already closing
             if (freshMobileMenu) {
-                freshMobileMenu.classList.remove("is-open");
-                freshMobileMenu.setAttribute("aria-hidden", "true");
+                // play reverse stagger animation first
+                freshMobileMenu.classList.add("is-closing");
             }
-            document.body.classList.remove("mobile-menu-open");
-            if (freshMenuButton) {
-                freshMenuButton.classList.remove("is-open");
-                freshMenuButton.setAttribute("aria-expanded", "false");
-                freshMenuButton.setAttribute(
-                    "aria-label",
-                    document.documentElement.lang === "en"
-                        ? "Open menu"
-                        : "メニューを開く",
+
+            // After the section animations finish, close the panel/backdrop
+            // timings must match CSS:
+            // close stagger max = 0.3s, transition = 0.35s => ~0.65s
+            const closeSectionsMs = 650;
+            const closePanelMs = 240; // panel/backdrop fade-out
+
+            closeStageTimer = setTimeout(() => {
+                closeStageTimer = null;
+                // start panel/backdrop fade
+                freshMobileMenu?.classList.remove("is-open");
+            }, closeSectionsMs);
+
+            closeFinalizeTimer = setTimeout(() => {
+                closeFinalizeTimer = null;
+                if (freshMobileMenu) {
+                    freshMobileMenu.classList.remove("is-closing");
+                    freshMobileMenu.setAttribute("aria-hidden", "true");
+                }
+                document.body.classList.remove("mobile-menu-open");
+                document.documentElement.style.setProperty(
+                    "--scrollbar-comp",
+                    "0px",
                 );
-            }
+                if (freshMenuButton) {
+                    freshMenuButton.classList.remove("is-open");
+                    freshMenuButton.setAttribute("aria-expanded", "false");
+                    freshMenuButton.setAttribute(
+                        "aria-label",
+                        document.documentElement.lang === "en"
+                            ? "Open menu"
+                            : "メニューを開く",
+                    );
+                }
+            }, closeSectionsMs + closePanelMs);
         }
 
         function toggleMenu() {
@@ -3005,17 +3058,6 @@ const nav = {
         menuLinks?.forEach((link) => {
             link.addEventListener("click", () => {
                 closeMenu(); // Instant close, no delay
-            });
-        });
-
-        // Close menu via in-menu close button(s)
-        const closeButtons =
-            freshMobileMenu?.querySelectorAll("[data-mobile-menu-close]");
-        closeButtons?.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                closeMenu();
             });
         });
 
