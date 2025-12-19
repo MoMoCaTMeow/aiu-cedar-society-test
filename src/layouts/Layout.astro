@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import "../styles/animations.css";
+import "../styles/sophisticated-design.css";
 import SEO from "../components/SEO.astro";
 import SchemaOrganization from "../components/SchemaOrganization.astro";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
@@ -84,6 +85,7 @@ const nav = {
 
         <!-- DNS Prefetch for faster resolution -->
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         <link rel="dns-prefetch" href="https://images.microcms-assets.io" />
         <link rel="dns-prefetch" href="https://unpkg.com" />
 
@@ -92,6 +94,14 @@ const nav = {
             rel="preconnect"
             href="https://images.microcms-assets.io"
             crossorigin
+        />
+        
+        <!-- Google Fonts: Shippori Mincho (Japanese Mincho) & Lato (Geometric Sans) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
+            rel="stylesheet"
         />
 
         <!-- Critical CSS Inline for instant render -->
@@ -112,7 +122,7 @@ const nav = {
             }
 
             body {
-                background-color: #f9fafb;
+                background-color: #F9F9F7;
                 color: #333333;
                 min-height: 100vh;
                 line-height: 1.75;
@@ -336,7 +346,9 @@ const nav = {
                 --color-primary-800: #002814;
                 --color-primary-900: #00140a;
 
-                /* Gray Scale */
+                /* Gray Scale - Washi-inspired tones */
+                --color-washi: #F9F9F7;
+                --color-washi-warm: #F7F5F0;
                 --color-gray-50: #f9fafb;
                 --color-gray-100: #f3f4f6;
                 --color-gray-200: #e5e7eb;
@@ -347,6 +359,15 @@ const nav = {
                 --color-gray-700: #374151;
                 --color-gray-800: #1f2937;
                 --color-gray-900: #111827;
+                
+                /* Akita Cedar-inspired colors */
+                --color-cedar-brown: #8B6F47;
+                --color-cedar-dark: #6B5433;
+                --color-cedar-light: #A68B6B;
+                
+                /* Accent colors - muted warm tones */
+                --color-accent-vermilion: #C85A3A;
+                --color-accent-yamabuki: #E6B422;
 
                 /* Semantic Colors */
                 --color-success: #10b981;
@@ -358,7 +379,13 @@ const nav = {
                 --font-sans:
                     "Noto Sans JP", -apple-system, BlinkMacSystemFont,
                     sans-serif;
+                --font-geometric: "Lato", "Noto Sans JP", sans-serif;
+                --font-mincho: "Shippori Mincho", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "HiraMinProN-W3", "MS PMincho", serif;
                 --font-mono: "SF Mono", Monaco, "Cascadia Code", monospace;
+                
+                /* Letter spacing for geometric fonts */
+                --letter-spacing-wide: 0.05em;
+                --letter-spacing-wider: 0.1em;
 
                 --font-size-xs: 0.75rem;
                 --font-size-sm: 0.875rem;
@@ -846,20 +873,16 @@ const nav = {
                 animation: ripple 0.6s ease-out;
             }
 
-            /* 3D Tilt Effect for Cards with Enhanced Depth */
+            /* Card hover effect (3D tilt removed - only shadow effect) */
             .card-tilt {
                 transition:
-                    transform 0.3s ease,
                     box-shadow 0.3s ease;
-                transform-style: preserve-3d;
                 box-shadow:
                     0 4px 20px -8px rgba(0, 104, 55, 0.08);
             }
 
             @media (hover: hover) {
                 .card-tilt:hover {
-                    transform: perspective(1000px) rotateY(2deg) rotateX(-2deg)
-                        scale(1.01);
                     box-shadow:
                         0 12px 40px -10px rgba(0, 104, 55, 0.15);
                 }
@@ -871,7 +894,6 @@ const nav = {
             }
 
             /* Will-change for performance optimization */
-            .card-tilt,
             .smooth-hover {
                 will-change: transform;
             }
@@ -999,7 +1021,6 @@ const nav = {
             }
             /* Remove will-change after interaction */
             @media (prefers-reduced-motion: reduce) {
-                .card-tilt,
                 .smooth-hover {
                     will-change: auto;
                     transition: none;
@@ -1258,7 +1279,8 @@ const nav = {
                     <!-- Logo -->
                     <a href={l("/")} class="flex-shrink-0">
                         <span
-                            class="text-xl font-bold text-gray-900 hover:text-[#006837] transition-colors"
+                            class="text-lg md:text-xl font-mincho-bold text-gray-900 hover:text-[#006837] transition-colors tracking-wide"
+                            style="letter-spacing: 0.05em;"
                         >
                             AIU Cedar Society
                         </span>
@@ -1274,7 +1296,7 @@ const nav = {
                         <!-- About Dropdown -->
                         <div class="relative dropdown-container">
                             <button
-                                class="dropdown-button nav-link inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                                class="dropdown-button nav-link typography-nav inline-flex items-center text-gray-600 hover:text-[#006837] text-sm transition-colors"
                                 style="gap: 0.375rem;"
                                 data-active={isActive("/about")}
                             >
@@ -1298,17 +1320,17 @@ const nav = {
                             >
                                 <a
                                     href={l("/about")}
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    class="block px-4 py-2 text-sm typography-nav text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
                                     >{nav.aboutUs}</a
                                 >
                                 <a
                                     href={l("/about/history")}
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    class="block px-4 py-2 text-sm typography-nav text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
                                     >{nav.history}</a
                                 >
                                 <a
                                     href={l("/about/members")}
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    class="block px-4 py-2 text-sm typography-nav text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
                                     >{nav.members}</a
                                 >
                             </div>
@@ -1317,7 +1339,7 @@ const nav = {
                         <!-- Events Dropdown -->
                         <div class="relative dropdown-container">
                             <button
-                                class="dropdown-button nav-link inline-flex items-center text-gray-600 hover:text-[#006837] text-sm font-medium transition-colors"
+                                class="dropdown-button nav-link typography-nav inline-flex items-center text-gray-600 hover:text-[#006837] text-sm transition-colors"
                                 style="gap: 0.375rem;"
                                 data-active={isActive("/events")}
                             >
@@ -1341,12 +1363,12 @@ const nav = {
                             >
                                 <a
                                     href={l("/events/upcoming")}
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    class="block px-4 py-2 text-sm typography-nav text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
                                     >{nav.upcoming}</a
                                 >
                                 <a
                                     href={l("/events/past")}
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
+                                    class="block px-4 py-2 text-sm typography-nav text-gray-700 hover:bg-gray-50 hover:text-[#006837]"
                                     >{nav.past}</a
                                 >
                             </div>
@@ -1355,31 +1377,31 @@ const nav = {
                         <!-- Media -->
                         <a
                             href={l("/media")}
-                            class="nav-link"
+                            class="nav-link typography-nav"
                             data-active={isActive("/media")}
                             >{nav.media}</a
                         ><!-- FAQ -->
                         <a
                             href={l("/faq")}
-                            class="nav-link"
+                            class="nav-link typography-nav"
                             data-active={isActive("/faq")}
                             >{nav.faq}</a
                         ><!-- Sponsors -->
                         <a
                             href={l("/sponsors")}
-                            class="nav-link"
+                            class="nav-link typography-nav"
                             data-active={isActive("/sponsors")}
                             >{nav.sponsors}</a
                         ><!-- Contact -->
                         <a
                             href={l("/contact")}
-                            class="nav-link"
+                            class="nav-link typography-nav"
                             data-active={isActive("/contact")}
                             >{nav.contact}</a
                         ><!-- Speaker Request -->
                         <a
                             href={l("/speaker-request")}
-                            class="nav-link"
+                            class="nav-link typography-nav"
                             data-active={isActive("/speaker-request")}
                             >Request</a
                         >
@@ -1559,6 +1581,40 @@ const nav = {
             .nav-link[data-active="true"] {
                 color: #006837 !important;
                 font-weight: 600 !important;
+            }
+
+            /* Header typography refinement */
+            header .typography-nav {
+                font-size: 0.875rem;
+                font-weight: 500;
+                letter-spacing: 0.05em;
+            }
+
+            header .nav-link[data-active="true"].typography-nav {
+                font-weight: 600;
+            }
+
+            header .font-mincho-bold {
+                font-weight: 600;
+                letter-spacing: 0.05em;
+            }
+
+            /* Footer typography refinement */
+            footer .font-mincho-bold {
+                font-weight: 600;
+                letter-spacing: 0.05em;
+            }
+
+            footer .typography-nav {
+                font-size: 0.875rem;
+                font-weight: 500;
+                letter-spacing: 0.05em;
+            }
+
+            footer .typography-label {
+                font-size: 0.75rem;
+                font-weight: 600;
+                letter-spacing: 0.08em;
             }
 
             .nav-link[data-active="true"]::after {
@@ -2119,10 +2175,11 @@ const nav = {
             }
 
             .mobile-menu-brand-title {
+                font-family: var(--font-mincho);
                 font-size: 16px;
-                font-weight: 800;
+                font-weight: 600;
                 color: #111827;
-                letter-spacing: -0.01em;
+                letter-spacing: 0.05em;
                 line-height: 1.2;
                 white-space: nowrap;
                 overflow: hidden;
@@ -2145,6 +2202,7 @@ const nav = {
             }
 
             .mobile-menu-group-title {
+                font-family: var(--font-geometric);
                 font-size: 12px;
                 font-weight: 800;
                 color: rgba(107, 114, 128, 0.9);
@@ -2185,10 +2243,11 @@ const nav = {
             }
 
             .mobile-menu-item-title {
+                font-family: var(--font-geometric);
                 font-size: 15px;
-                font-weight: 800;
+                font-weight: 600;
                 color: #111827;
-                letter-spacing: -0.01em;
+                letter-spacing: var(--letter-spacing-wide);
                 line-height: 1.2;
             }
 
@@ -2243,6 +2302,7 @@ const nav = {
             }
 
             .mobile-menu-footer-text {
+                font-family: var(--font-geometric);
                 text-align: center;
                 font-size: 12px;
                 font-weight: 600;
@@ -2315,13 +2375,14 @@ const nav = {
             <div style="max-width: 800px; margin: 0 auto; text-align: center;">
                 <!-- Title -->
                 <p
-                    style="color: #111827; font-weight: 700; font-size: 1.25rem; margin-bottom: 12px;"
+                    class="font-mincho-bold"
+                    style="color: #111827; font-weight: 600; font-size: 1.25rem; margin-bottom: 12px; letter-spacing: 0.05em;"
                 >
                     AIU Cedar Society
                 </p>
                 <!-- Description -->
                 <p
-                    style="color: #4b5563; font-size: 0.875rem; line-height: 1.6; margin-bottom: 40px;"
+                    style="color: #4b5563; font-size: 0.875rem; line-height: 1.6; margin-bottom: 40px; font-family: var(--font-geometric);"
                 >
                     {
                         currentLang === "en"
@@ -2358,11 +2419,13 @@ const nav = {
                         <!-- Text -->
                         <div style="text-align: left;">
                             <p
+                                class="typography-label"
                                 style="color: #6b7280; font-size: 0.75rem; margin-bottom: 2px;"
                             >
                                 Follow us on Instagram
                             </p>
                             <p
+                                class="typography-nav"
                                 style="color: #111827; font-weight: 600; font-size: 1rem;"
                             >
                                 @aiucedarsociety
@@ -2391,43 +2454,44 @@ const nav = {
                     <a
                         href={l("/about")}
                         style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
-                        class="hover:text-[#006837]">About</a
+                        class="typography-nav hover:text-[#006837]">About</a
                     >
                     <a
                         href={l("/events/upcoming")}
                         style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
-                        class="hover:text-[#006837]">Events</a
+                        class="typography-nav hover:text-[#006837]">Events</a
                     >
                     <a
                         href={l("/media")}
                         style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
-                        class="hover:text-[#006837]">Media</a
+                        class="typography-nav hover:text-[#006837]">Media</a
                     >
                     <a
                         href={l("/faq")}
                         style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
-                        class="hover:text-[#006837]">FAQ</a
+                        class="typography-nav hover:text-[#006837]">FAQ</a
                     >
                     <a
                         href={l("/sponsors")}
                         style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
-                        class="hover:text-[#006837]">Sponsors</a
+                        class="typography-nav hover:text-[#006837]">Sponsors</a
                     >
                     <a
                         href={l("/contact")}
                         style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
-                        class="hover:text-[#006837]">Contact</a
+                        class="typography-nav hover:text-[#006837]">Contact</a
                     >
                     <a
                         href={l("/speaker-request")}
                         style="color: #4b5563; font-size: 0.875rem; text-decoration: none;"
-                        class="hover:text-[#006837]">Request</a
+                        class="typography-nav hover:text-[#006837]">Request</a
                     >
                 </div>
 
                 <!-- Copyright -->
                 <div style="padding-top: 24px; border-top: 1px solid #e5e7eb;">
                     <p
+                        class="typography-label"
                         style="color: #6b7280; font-size: 0.75rem; letter-spacing: 0.025em;"
                     >
                         &copy; {new Date().getFullYear()} AIU Cedar Society. All rights
@@ -3445,4 +3509,180 @@ const nav = {
     // Initialize on page load and after View Transitions
     initScrollAnimations();
     document.addEventListener("astro:page-load", initScrollAnimations);
+
+    // ===========================================
+    // ENHANCED RIPPLE EFFECT
+    // ===========================================
+    function initRippleEffect() {
+        const rippleButtons = document.querySelectorAll('.btn-ripple-enhanced');
+        
+        rippleButtons.forEach(btn => {
+            // Remove existing listeners by cloning
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode?.replaceChild(newBtn, btn);
+            
+            newBtn.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                
+                // Size based on button dimensions
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.marginLeft = ripple.style.marginTop = -(size / 2) + 'px';
+                
+                this.appendChild(ripple);
+                
+                // Remove ripple after animation
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    }
+    
+    initRippleEffect();
+    document.addEventListener('astro:page-load', initRippleEffect);
+
+    // ===========================================
+    // CONFETTI CELEBRATION
+    // ===========================================
+    window.showConfetti = function(options = {}) {
+        const {
+            count = 50,
+            duration = 3000,
+            colors = ['#006837', '#00a855', '#fbbf24', '#f59e0b', '#ef4444', '#3b82f6']
+        } = options;
+        
+        const container = document.createElement('div');
+        container.className = 'confetti-container';
+        document.body.appendChild(container);
+        
+        const shapes = ['confetti-square', 'confetti-circle', 'confetti-triangle'];
+        
+        for (let i = 0; i < count; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = `confetti ${shapes[Math.floor(Math.random() * shapes.length)]}`;
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            confetti.style.animationDuration = (Math.random() * 1 + 2) + 's';
+            
+            // Random rotation
+            const rotation = Math.random() * 360;
+            confetti.style.transform = `rotate(${rotation}deg)`;
+            
+            container.appendChild(confetti);
+        }
+        
+        // Remove container after animation
+        setTimeout(() => container.remove(), duration);
+    };
+
+    // ===========================================
+    // FLOATING LABEL INITIALIZATION
+    // ===========================================
+    function initFloatingLabels() {
+        const floatingGroups = document.querySelectorAll('.floating-label-group');
+        
+        floatingGroups.forEach(group => {
+            const input = group.querySelector('input, textarea');
+            const label = group.querySelector('label');
+            
+            if (!input || !label) return;
+            
+            // Ensure placeholder is set for CSS to work
+            if (!input.placeholder) {
+                input.placeholder = ' ';
+            }
+            
+            // Handle autofill
+            input.addEventListener('animationstart', (e) => {
+                if (e.animationName === 'onAutoFillStart') {
+                    input.classList.add('autofilled');
+                }
+            });
+        });
+    }
+    
+    initFloatingLabels();
+    document.addEventListener('astro:page-load', initFloatingLabels);
+
+    // ===========================================
+    // SCROLL REVEAL - Organic Animation
+    // ===========================================
+    function initScrollReveal() {
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+        
+        if (revealElements.length === 0) return;
+        
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (prefersReducedMotion) {
+            revealElements.forEach(el => el.classList.add('revealed'));
+            return;
+        }
+        
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            {
+                threshold: 0.1,
+                rootMargin: '0px 0px -80px 0px'
+            }
+        );
+        
+        revealElements.forEach(el => observer.observe(el));
+    }
+    
+    initScrollReveal();
+    document.addEventListener('astro:page-load', initScrollReveal);
+
+    // ===========================================
+    // PARALLAX - Slow Background Movement
+    // ===========================================
+    function initParallax() {
+        const parallaxElements = document.querySelectorAll('.parallax-slow');
+        
+        if (parallaxElements.length === 0) return;
+        
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (prefersReducedMotion) return;
+        
+        let ticking = false;
+        
+        function updateParallax() {
+            const scrollY = window.scrollY;
+            
+            parallaxElements.forEach(el => {
+                const speed = parseFloat(el.dataset.parallaxSpeed || '0.3');
+                const yPos = -(scrollY * speed);
+                el.style.transform = `translate3d(0, ${yPos}px, 0)`;
+            });
+            
+            ticking = false;
+        }
+        
+        function requestTick() {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }
+        
+        window.addEventListener('scroll', requestTick, { passive: true });
+    }
+    
+    initParallax();
+    document.addEventListener('astro:page-load', initParallax);
 </script>

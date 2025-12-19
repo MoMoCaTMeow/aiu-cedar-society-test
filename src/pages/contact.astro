@@ -49,9 +49,7 @@ const breadcrumbItems = [
                 <div class="relative mb-6">
                     <div class="absolute top-0 left-0 w-px h-full bg-[#006837]">
                     </div>
-                    <h1
-                        class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight pl-6"
-                    >
+                    <h1 class="typography-hero pl-6">
                         お問い合わせ
                     </h1>
                 </div>
@@ -399,6 +397,10 @@ const breadcrumbItems = [
                         "お問い合わせを受け付けました。通常、2〜3営業日以内にご返信いたします。",
                         "success",
                     );
+                    // 🎉 Celebration confetti
+                    if (typeof window.showConfetti === "function") {
+                        window.showConfetti();
+                    }
                 } else {
                     throw new Error("送信に失敗しました。");
                 }

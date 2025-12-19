@@ -51,7 +51,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
 
 <Layout seo={seo}>
     <div
-        class="bg-gradient-to-b from-gray-50 to-white min-h-screen relative overflow-hidden"
+        class="bg-gradient-to-b from-gray-50 to-white min-h-screen relative overflow-hidden washi-texture washi-overlay"
     >
         {/* Animated Background Gradient with Parallax */}
         <div
@@ -72,14 +72,12 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                             class="absolute top-0 left-0 w-px h-full bg-[#006837] hero-line"
                         >
                         </div>
-                        <h1
-                            class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight pl-6"
-                        >
+                        <h1 class="typography-hero pl-6">
                             <span class="inline-block hero-text-1"
                                 >Connecting Akita & AIU</span
                             ><br />
                             <span
-                                class="text-[#006837] inline-block hero-text-2"
+                                class="text-[#006837] inline-block hero-text-2 typography-hero-accent"
                                 >Possibilities</span
                             >
                         </h1>
@@ -122,14 +120,14 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                                         />
                                     </svg>
                                 </div>
-                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                                <h2 class="typography-section">
                                     Upcoming
                                     <span class="text-[#006837]">Events</span>
                                 </h2>
                             </div>
                             <a
                                 href="/en/events/upcoming"
-                                class="hidden sm:flex items-center gap-2 text-sm font-medium text-[#006837] hover:gap-3 transition-all duration-300"
+                                class="hidden sm:flex items-center gap-2 text-sm text-[#006837] hover:gap-3 transition-all duration-300 typography-nav"
                             >
                                 <span>View Details</span>
                                 <svg
@@ -152,7 +150,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                         <div class="space-y-6">
                             {upcomingEvents.slice(0, 2).map((event, index) => (
                                 <div
-                                    class="border-l-4 border-[#006837] bg-gray-50 p-6 rounded-r-lg hover-lift"
+                                    class={`border-l-4 border-[#006837] bg-gray-50/80 p-6 rounded-r-lg hover-lift glass-card scroll-reveal scroll-reveal-delay-${index + 1} organic-hover`}
                                     data-animate
                                     data-animate-delay={index + 1}
                                 >
@@ -171,7 +169,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                 />
                                             </svg>
-                                            <div class="text-xs font-bold text-[#006837] tracking-wider uppercase">
+                                            <div class="typography-label text-[#006837]">
                                                 {formatDateTime(
                                                     event.event_date,
                                                     lang,
@@ -227,7 +225,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                         <div class="mt-8 sm:hidden text-center">
                             <a
                                 href="/en/events/upcoming"
-                                class="inline-flex items-center gap-2 px-6 py-3 bg-[#006837] text-white rounded-lg hover:bg-[#005028] transition-colors duration-300 font-medium"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-[#006837] text-white rounded-lg hover:bg-[#005028] transition-colors duration-300 btn-ripple-enhanced btn-organic typography-button"
                             >
                                 <span>View All Events</span>
                                 <svg
@@ -276,9 +274,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                             ></path>
                         </svg>
                     </div>
-                    <h2
-                        class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight"
-                    >
+                    <h2 class="typography-section">
                         Recent Lectures
                     </h2>
                 </div>
@@ -311,7 +307,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                             class="lecture-card block group card-tilt"
                         >
                             <div
-                                class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden ring-1 ring-gray-100 group-hover:ring-[#006837]/30 hover-lift"
+                                class={`bg-white/90 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden ring-1 ring-gray-100 group-hover:ring-[#006837]/30 hover-lift glass-card scroll-reveal scroll-reveal-delay-${index + 1}`}
                                 data-animate
                                 data-animate-delay={index + 1}
                             >
@@ -348,7 +344,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                                                             : "auto"
                                                     }
                                                     decoding="async"
-                                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    class="w-full h-full object-cover img-organic-hover"
                                                 />
                                             ) : (
                                                 <div class="w-full h-full bg-gradient-to-br from-[#006837] to-[#005028] flex items-center justify-center">
@@ -446,7 +442,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
             <div class="mt-10 md:mt-12 text-center">
                 <a
                     href="/en/events/past"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#006837] text-[#006837] font-bold rounded-lg hover:bg-[#006837] hover:text-white transition-all duration-300 shadow-md hover:shadow-lg min-h-[44px]"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#006837] text-[#006837] rounded-lg hover:bg-[#006837] hover:text-white transition-all duration-300 shadow-md hover:shadow-lg min-h-[44px] typography-button"
                 >
                     <span>View All Lectures</span>
                     <svg

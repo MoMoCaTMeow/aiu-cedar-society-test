@@ -41,7 +41,7 @@ const seo = {
 
 <Layout seo={seo}>
     <div
-        class="bg-gradient-to-b from-gray-50 to-white min-h-screen relative overflow-hidden"
+        class="bg-gradient-to-b from-gray-50 to-white min-h-screen relative overflow-hidden washi-texture"
     >
         {/* Animated Background Gradient with Parallax */}
         <div
@@ -62,13 +62,11 @@ const seo = {
                             class="absolute top-0 left-0 w-px h-full bg-[#006837] hero-line"
                         >
                         </div>
-                        <h1
-                            class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-tight pl-6"
-                        >
+                        <h1 class="typography-hero pl-6">
                             <span class="inline-block hero-text-1"
                                 >秋田とAIU生の可能性を</span
                             ><span
-                                class="text-[#006837] inline-block hero-text-2"
+                                class="text-[#006837] inline-block hero-text-2 typography-hero-accent"
                                 >つなぐ</span
                             >
                         </h1>
@@ -86,7 +84,7 @@ const seo = {
         </section>
 
         {/* Divider between Hero and Upcoming */}
-        <div class="section-divider" data-animate data-animate-delay="1"></div>
+        <div class="organic-divider scroll-reveal scroll-reveal-delay-1"></div>
 
         {/* Upcoming Events Section */}
         {
@@ -114,14 +112,14 @@ const seo = {
                                         />
                                     </svg>
                                 </div>
-                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                                <h2 class="typography-section">
                                     今後の
                                     <span class="text-[#006837]">予定</span>
                                 </h2>
                             </div>
                             <a
                                 href="/events/upcoming"
-                                class="hidden sm:flex items-center gap-2 text-sm font-medium text-[#006837] hover:gap-3 transition-all duration-300"
+                                class="hidden sm:flex items-center gap-2 text-sm text-[#006837] hover:gap-3 transition-all duration-300 typography-nav"
                             >
                                 <span>詳細を見る</span>
                                 <svg
@@ -144,7 +142,7 @@ const seo = {
                         <div class="space-y-6">
                             {upcomingEvents.slice(0, 2).map((event, index) => (
                                 <div
-                                    class="border-l-4 border-[#006837] bg-gray-50 p-6 rounded-r-lg hover-lift"
+                                    class={`border-l-4 border-[#006837] bg-gray-50/80 p-6 rounded-r-lg hover-lift glass-card scroll-reveal scroll-reveal-delay-${index + 1} organic-hover`}
                                     data-animate
                                     data-animate-delay={index + 1}
                                 >
@@ -163,7 +161,7 @@ const seo = {
                                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                 />
                                             </svg>
-                                            <div class="text-xs font-bold text-[#006837] tracking-wider uppercase">
+                                            <div class="typography-label text-[#006837]">
                                                 {new Date(
                                                     event.event_date,
                                                 ).toLocaleString("ja-JP", {
@@ -216,7 +214,7 @@ const seo = {
                         <div class="mt-8 sm:hidden text-center">
                             <a
                                 href="/events/upcoming"
-                                class="inline-flex items-center gap-2 px-6 py-3 bg-[#006837] text-white rounded-lg hover:bg-[#005028] transition-colors duration-300 font-medium"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-[#006837] text-white rounded-lg hover:bg-[#005028] transition-colors duration-300 btn-ripple-enhanced btn-organic typography-button"
                             >
                                 <span>すべての予定を見る</span>
                                 <svg
@@ -268,9 +266,7 @@ const seo = {
                             ></path>
                         </svg>
                     </div>
-                    <h2
-                        class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight"
-                    >
+                    <h2 class="typography-section">
                         直近の講演会
                     </h2>
                 </div>
@@ -303,7 +299,7 @@ const seo = {
                             class="lecture-card block group card-tilt"
                         >
                             <div
-                                class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden ring-1 ring-gray-100 group-hover:ring-[#006837]/30 hover-lift"
+                                class={`bg-white/90 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden ring-1 ring-gray-100 group-hover:ring-[#006837]/30 hover-lift glass-card scroll-reveal scroll-reveal-delay-${index + 1}`}
                                 data-animate
                                 data-animate-delay={index + 1}
                             >
@@ -336,7 +332,7 @@ const seo = {
                                                             : "auto"
                                                     }
                                                     decoding="async"
-                                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    class="w-full h-full object-cover img-organic-hover"
                                                 />
                                             ) : (
                                                 <div class="w-full h-full bg-gradient-to-br from-[#006837] to-[#005028] flex items-center justify-center">
@@ -431,7 +427,7 @@ const seo = {
             <div class="mt-10 md:mt-12 text-center">
                 <a
                     href="/events/past"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#006837] text-[#006837] font-bold rounded-lg hover:bg-[#006837] hover:text-white transition-all duration-300 shadow-md hover:shadow-lg min-h-[44px]"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#006837] text-[#006837] rounded-lg hover:bg-[#006837] hover:text-white transition-all duration-300 shadow-md hover:shadow-lg min-h-[44px] typography-button"
                 >
                     <span>すべての講演会を見る</span>
                     <svg
