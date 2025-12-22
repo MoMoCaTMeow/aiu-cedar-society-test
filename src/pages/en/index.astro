@@ -1,6 +1,9 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getLectures, getUpcomingEvents } from "../../library/microcms";
+import FluidGradient from "../../components/FluidGradient.astro";
+import Marquee from "../../components/Marquee.astro";
+import MagneticButton from "../../components/MagneticButton.astro";
+import { getLectures, getUpcomingEvents, getPages } from "../../library/microcms";
 import { useTranslations, formatDate, formatDateTime } from "../../i18n/utils";
 
 const lang = "en";
@@ -35,6 +38,19 @@ const lectures = response.contents
 const upcomingResponse = await getUpcomingEvents();
 const upcomingEvents = upcomingResponse.contents;
 
+// Fetch sponsors for marquee
+let sponsors: Array<{ name: string; logo?: string; url?: string }> = [];
+try {
+    const pages = await getPages();
+    sponsors = (pages.sponsors || []).map((s: any) => ({
+        name: s.name,
+        logo: s.logo?.url,
+        url: s.url,
+    }));
+} catch (error) {
+    console.error("Error fetching sponsors:", error);
+}
+
 // SEO
 const seo = {
     title: "AIU Cedar Society - Connecting Akita with AIU Students",
@@ -53,13 +69,8 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
     <div
         class="bg-gradient-to-b from-gray-50 to-white min-h-screen relative overflow-hidden washi-texture washi-overlay"
     >
-        {/* Animated Background Gradient with Parallax */}
-        <div
-            id="parallax-bg"
-            class="absolute inset-0 bg-gradient-to-br from-[#006837]/3 via-transparent to-gray-100/50 pointer-events-none"
-            style="will-change: transform;"
-        >
-        </div>
+        {/* Warm Friendly Background */}
+        <FluidGradient />
 
         {/* Hero Section with 3D Depth */}
         <section
@@ -223,9 +234,11 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
 
                         {/* Mobile View All Button */}
                         <div class="mt-8 sm:hidden text-center">
-                            <a
+                            <MagneticButton
                                 href="/en/events/upcoming"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-[#006837] text-white rounded-lg hover:bg-[#005028] transition-colors duration-300 btn-ripple-enhanced btn-organic typography-button"
+                                strength={0.25}
+                                ariaLabel="View All Events"
                             >
                                 <span>View All Events</span>
                                 <svg
@@ -241,7 +254,7 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                                         d="M9 5l7 7-7 7"
                                     />
                                 </svg>
-                            </a>
+                            </MagneticButton>
                         </div>
                     </div>
                 </section>
@@ -440,11 +453,13 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
 
             {/* View All Button */}
             <div class="mt-10 md:mt-12 text-center">
-                <a
+                <MagneticButton
                     href="/en/events/past"
                     class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#006837] text-[#006837] rounded-lg hover:bg-[#006837] hover:text-white transition-all duration-300 shadow-md hover:shadow-lg min-h-[44px] typography-button"
+                    strength={0.25}
+                    ariaLabel="See All Lectures"
                 >
-                    <span>View All Lectures</span>
+                    <span>See All Lectures</span>
                     <svg
                         class="w-5 h-5"
                         fill="none"
@@ -457,9 +472,51 @@ const getContent = (en: string | undefined, ja: string) => en || ja;
                             stroke-width="2"
                             d="M9 5l7 7-7 7"></path>
                     </svg>
-                </a>
+                </MagneticButton>
             </div>
         </main>
+
+        {/* Sponsors Marquee Section */}
+        {sponsors.length > 0 && (
+            <section class="py-12 md:py-16 bg-gradient-to-b from-white to-gray-50">
+                <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+                    <div class="mb-8 scroll-reveal-slide-up">
+                        <h2 class="typography-section text-center mb-4">
+                            Sponsors
+                        </h2>
+                        <p class="text-center text-gray-600 max-w-2xl mx-auto">
+                            Partners who support AIU Cedar Society
+                        </p>
+                    </div>
+                    <Marquee
+                        items={sponsors}
+                        speed="normal"
+                        direction="left"
+                    />
+                    <div class="mt-8 text-center">
+                        <a
+                            href="/en/sponsors"
+                            class="inline-flex items-center gap-2 text-sm text-[#006837] hover:gap-3 transition-all duration-300 typography-nav"
+                        >
+                            <span>View all sponsors</span>
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        )}
     </div>
 </Layout>
 

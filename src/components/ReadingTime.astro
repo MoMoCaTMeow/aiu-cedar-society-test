@@ -1,0 +1,55 @@
+---
+import { calculateReadingTime } from '../utils/readingTime';
+
+interface Props {
+  content: string;
+  className?: string;
+}
+
+const { content, className = '' } = Astro.props;
+const readingTime = calculateReadingTime(content);
+---
+
+<div class={`reading-time-indicator ${className}`}>
+  <svg 
+    class="reading-time-icon" 
+    width="16" 
+    height="16" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <polyline points="12 6 12 12 16 14"></polyline>
+  </svg>
+  <span class="reading-time-text">
+    この記事は約{readingTime}分で読めます
+  </span>
+</div>
+
+<style>
+  .reading-time-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 104, 55, 0.05);
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    color: var(--color-gray-700, #374151);
+    margin-bottom: 1rem;
+  }
+  
+  .reading-time-icon {
+    color: var(--color-primary, #006837);
+    flex-shrink: 0;
+  }
+  
+  .reading-time-text {
+    font-family: var(--font-geometric, 'Lato', sans-serif);
+    font-weight: 500;
+  }
+</style>
+

@@ -1,0 +1,163 @@
+---
+interface Props {
+  items: Array<{ name: string; logo?: string; url?: string }>;
+  speed?: 'slow' | 'normal' | 'fast';
+  direction?: 'left' | 'right';
+  className?: string;
+}
+
+const { 
+  items, 
+  speed = 'normal', 
+  direction = 'left',
+  className = '' 
+} = Astro.props;
+
+const speedMap = {
+  slow: '30s',
+  normal: '20s',
+  fast: '15s',
+};
+
+const animationDirection = direction === 'left' ? 'marquee-left' : 'marquee-right';
+---
+
+<div class={`marquee-container ${className}`}>
+  <div class={`marquee-track marquee-${direction}`} style={`--marquee-speed: ${speedMap[speed]}`}>
+    <!-- 最初のセット -->
+    <div class="marquee-content">
+      {items.map((item) => (
+        <div class="marquee-item">
+          {item.logo ? (
+            <img 
+              src={item.logo} 
+              alt={item.name}
+              class="marquee-logo"
+              loading="lazy"
+            />
+          ) : (
+            <span class="marquee-text">{item.name}</span>
+          )}
+        </div>
+      ))}
+    </div>
+    <!-- 2セット目（シームレスループ用） -->
+    <div class="marquee-content" aria-hidden="true">
+      {items.map((item) => (
+        <div class="marquee-item">
+          {item.logo ? (
+            <img 
+              src={item.logo} 
+              alt=""
+              class="marquee-logo"
+              loading="lazy"
+            />
+          ) : (
+            <span class="marquee-text">{item.name}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .marquee-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 2rem 0;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0) 5%,
+      rgba(255, 255, 255, 0) 95%,
+      rgba(255, 255, 255, 1) 100%
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    width: fit-content;
+    animation: var(--animation-name, marquee-left) var(--marquee-speed, 20s) linear infinite;
+  }
+
+  .marquee-content {
+    display: flex;
+    gap: 3rem;
+    padding: 0 2rem;
+  }
+
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 1rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 200px;
+  }
+
+  .marquee-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 104, 55, 0.15);
+  }
+
+  .marquee-logo {
+    max-width: 120px;
+    max-height: 60px;
+    object-fit: contain;
+    filter: grayscale(0.3);
+    transition: filter 0.3s ease;
+  }
+
+  .marquee-item:hover .marquee-logo {
+    filter: grayscale(0);
+  }
+
+  .marquee-text {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-gray-700, #374151);
+    white-space: nowrap;
+  }
+
+  @keyframes marquee-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-right {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  /* アクセシビリティ: 動きを減らす設定に対応 */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+    
+    .marquee-content {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+
+  /* パフォーマンス最適化 */
+  .marquee-track {
+    will-change: transform;
+  }
+</style>
+

@@ -1272,7 +1272,7 @@ const nav = {
         <!-- HEADER -->
         <header
             id="site-header"
-            class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200"
+            class="fixed top-0 left-0 right-0 z-50 glass-nav"
         >
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 items-center justify-between">
@@ -1457,8 +1457,6 @@ const nav = {
                 left: 0 !important;
                 right: 0 !important;
                 z-index: 50 !important;
-                background-color: white !important;
-                border-bottom: 1px solid #e5e7eb !important;
                 height: 64px !important;
             }
 
@@ -1725,293 +1723,117 @@ const nav = {
                 <div
                     class="flex-1 overflow-y-auto mobile-menu-content"
                 >
-                    <div class="mobile-menu-inner">
-                        <!-- Primary (CTA) -->
-                        <div class="menu-section" style="--delay: 0;">
-                            <a
-                                href={l("/speaker-request")}
-                                class="mobile-menu-cta"
-                            >
-                                <div class="mobile-menu-cta-title">
-                                    {nav.speakerRequest}
+                    <div
+                        class="menu-section mobile-menu-grid-container"
+                        style="--delay: 0;"
+                    >
+                        <nav
+                            class="mobile-menu-grid"
+                            aria-label={currentLang === "en" ? "Menu" : "メニュー"}
+                        >
+                            <a href={l("/about")} class="mobile-grid-item">
+                                <div class="mobile-grid-title">
+                                    {nav.aboutUs}
                                 </div>
-                                <div class="mobile-menu-cta-desc">
-                                    {
-                                        currentLang === "en"
-                                            ? "Suggest a guest speaker for our lecture series"
-                                            : "講演会に呼んでほしい講演者をリクエスト"
-                                    }
+                                <div class="mobile-grid-desc">
+                                    {currentLang === "en"
+                                        ? "Mission & overview"
+                                        : "ミッション・概要"}
                                 </div>
                             </a>
-                        </div>
-
-                        <!-- Events -->
-                        <div class="menu-section" style="--delay: 1;">
-                            <div class="mobile-menu-group-title">
-                                {currentLang === "en" ? "Events" : "イベント"}
-                            </div>
-                            <nav class="mobile-menu-list" aria-label={currentLang === "en" ? "Events" : "イベント"}>
-                                <a
-                                    href={l("/events/upcoming")}
-                                    class="mobile-menu-item"
-                                >
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                            {nav.upcoming}
-                                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Upcoming schedules & announcements" : "今後の予定・開催情報"}
-                                        </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                            stroke-width="2.5"
+                            <a
+                                href={l("/about/members")}
+                                class="mobile-grid-item"
                             >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                            </svg>
-                                    </span>
-                                </a>
-                                <a
-                                    href={l("/events/past")}
-                                    class="mobile-menu-item"
-                                >
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                            {nav.past}
+                                <div class="mobile-grid-title">
+                                    {nav.members}
+                                </div>
+                                <div class="mobile-grid-desc">
+                                    {currentLang === "en"
+                                        ? "Meet the team"
+                                        : "メンバー紹介"}
+                                </div>
+                            </a>
+                            <a
+                                href={l("/events/upcoming")}
+                                class="mobile-grid-item"
+                            >
+                                <div class="mobile-grid-title">
+                                    {nav.upcoming}
+                                </div>
+                                <div class="mobile-grid-desc">
+                                    {currentLang === "en"
+                                        ? "Upcoming schedules & announcements"
+                                        : "今後の予定・開催情報"}
+                                </div>
+                            </a>
+                            <a
+                                href={l("/events/past")}
+                                class="mobile-grid-item"
+                            >
+                                <div class="mobile-grid-title">
+                                    {nav.past}
+                                </div>
+                                <div class="mobile-grid-desc">
+                                    {currentLang === "en"
+                                        ? "Archive of past lectures"
+                                        : "過去の講演会アーカイブ"}
+                                </div>
+                            </a>
+                            <a href={l("/media")} class="mobile-grid-item">
+                                <div class="mobile-grid-title">
+                                    {nav.media}
+                                </div>
+                                <div class="mobile-grid-desc">
+                                    {currentLang === "en"
+                                        ? "Press & coverage"
+                                        : "メディア掲載"}
+                                </div>
+                            </a>
+                            <a href={l("/faq")} class="mobile-grid-item">
+                                <div class="mobile-grid-title">{nav.faq}</div>
+                                <div class="mobile-grid-desc">
+                                    {currentLang === "en"
+                                        ? "Frequently asked questions"
+                                        : "よくあるご質問"}
+                                </div>
+                            </a>
+                            <a
+                                href={l("/sponsors")}
+                                class="mobile-grid-item"
+                            >
+                                <div class="mobile-grid-title">
+                                    {nav.sponsors}
+                                </div>
+                                <div class="mobile-grid-desc">
+                                    {currentLang === "en"
+                                        ? "Partners supporting our activities"
+                                        : "協賛企業・パートナー"}
+                                </div>
+                            </a>
+                        </nav>
                     </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Archive of past lectures" : "過去の講演会アーカイブ"}
-                                        </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="mobile-menu-footer">
+                    <div
+                        class="menu-section mobile-menu-actions"
+                        style="--delay: 1;"
+                    >
+                        <a
+                            href={l("/speaker-request")}
+                            class="mobile-menu-cta-primary"
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                        </svg>
-                                    </span>
-                                </a>
-                            </nav>
-                </div>
-
-                        <!-- About -->
-                        <div class="menu-section" style="--delay: 2;">
-                            <div class="mobile-menu-group-title">
-                                {currentLang === "en" ? "About" : "団体について"}
-                        </div>
-                            <nav class="mobile-menu-list" aria-label={currentLang === "en" ? "About" : "団体について"}>
-                                <a href={l("/about")} class="mobile-menu-item">
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                {nav.aboutUs}
-                                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Mission & overview" : "ミッション・概要"}
-                                        </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                                        </svg>
-                                    </span>
-                                </a>
-                                <a href={l("/about/history")} class="mobile-menu-item">
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                            {nav.history}
-                                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "How we started" : "設立の経緯"}
-                                        </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                                        </svg>
-                                    </span>
-                                </a>
-                                <a href={l("/about/members")} class="mobile-menu-item">
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                            {nav.members}
-                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Meet the team" : "メンバー紹介"}
-                    </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                                        </svg>
-                            </span>
-                                </a>
-                            </nav>
-                        </div>
-
-                        <!-- More -->
-                        <div class="menu-section" style="--delay: 3;">
-                            <div class="mobile-menu-group-title">
-                                {currentLang === "en" ? "More" : "その他"}
-                            </div>
-                            <nav class="mobile-menu-list" aria-label={currentLang === "en" ? "More" : "その他"}>
-                                <a href={l("/media")} class="mobile-menu-item">
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                            {currentLang === "en" ? "Media" : "メディア"}
-                                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Press & coverage" : "メディア掲載"}
-                                        </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                                        </svg>
-                                    </span>
-                                </a>
-                                <a href={l("/faq")} class="mobile-menu-item">
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                            FAQ
-                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Frequently asked questions" : "よくあるご質問"}
-                    </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                                        </svg>
-                            </span>
-                                </a>
-                                <a href={l("/sponsors")} class="mobile-menu-item">
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                {currentLang === "en" ? "Sponsors" : "協賛企業"}
-                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Partners supporting our activities" : "協賛企業・パートナー"}
-                    </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                                        </svg>
-                                    </span>
-                                </a>
-                                <a href={l("/contact")} class="mobile-menu-item">
-                                    <div class="mobile-menu-item-main">
-                                        <div class="mobile-menu-item-title">
-                                            {currentLang === "en" ? "Contact" : "お問い合わせ"}
-                                        </div>
-                                        <div class="mobile-menu-item-desc">
-                                            {currentLang === "en" ? "Get in touch" : "ご質問・ご相談はこちら"}
-                                        </div>
-                                    </div>
-                                    <span class="mobile-menu-item-arrow" aria-hidden="true">
-                                        <svg
-                                            class="mobile-menu-item-arrow-icon"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                            stroke-width="2.5"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            ></path>
-                            </svg>
-                                    </span>
+                            {nav.speakerRequest}
                         </a>
-                            </nav>
-                        </div>
+                        <a
+                            href={l("/contact")}
+                            class="mobile-menu-cta-secondary"
+                        >
+                            {currentLang === "en" ? "Contact" : "お問い合わせ"}
+                        </a>
                     </div>
-                </div>
-
-                <!-- Footer Brand -->
-                <div class="px-6 py-5 mobile-menu-footer">
-                    <p class="mobile-menu-footer-text">
-                        {currentLang === "en"
-                            ? "AIU Cedar Society"
-                            : "AIU Cedar Society"}
-                    </p>
                 </div>
             </div>
         </div>
@@ -2326,15 +2148,15 @@ const nav = {
             }
 
             /* Reverse stagger on close */
-            .mobile-menu-inner {
-                --menu-stagger-count: 3; /* max --delay used in markup */
+            #mobile-menu {
+                --menu-stagger-count: 1; /* max --delay used in markup */
             }
 
             #mobile-menu.is-closing .menu-section {
                 opacity: 0;
                 transform: translateY(10px);
                 transition-delay: calc(
-                    (var(--menu-stagger-count, 3) - var(--delay)) * 0.1s
+                    (var(--menu-stagger-count, 1) - var(--delay)) * 0.1s
                 );
             }
 
@@ -2361,6 +2183,245 @@ const nav = {
 
             .mobile-menu-content::-webkit-scrollbar-thumb:hover {
                 background: rgba(0, 0, 0, 0.2);
+            }
+
+            /* Mobile menu compact grid override */
+            .mobile-menu-content {
+                padding: 12px 14px 16px;
+            }
+
+            .menu-section {
+                margin: 0;
+                padding: 0;
+            }
+
+            .mobile-menu-grid {
+                display: grid;
+                gap: 14px;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .mobile-grid-item {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                min-width: 0;
+                min-height: 68px;
+                padding: 14px;
+                border-radius: 16px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.92),
+                    rgba(245, 248, 250, 0.9)
+                );
+                border: 1px solid rgba(0, 104, 55, 0.08);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                box-shadow:
+                    0 12px 28px rgba(17, 24, 39, 0.08),
+                    0 1px 0 rgba(255, 255, 255, 0.85) inset;
+                text-decoration: none;
+                transition:
+                    transform 180ms ease,
+                    border-color 180ms ease,
+                    box-shadow 180ms ease,
+                    background 180ms ease;
+            }
+
+            .mobile-grid-item::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 104, 55, 0.16),
+                    rgba(0, 168, 85, 0.1)
+                );
+                opacity: 0;
+                transition: opacity 180ms ease;
+                pointer-events: none;
+            }
+
+            .mobile-grid-item:hover,
+            .mobile-grid-item:focus-visible {
+                transform: translateY(-2px);
+                border-color: rgba(0, 104, 55, 0.2);
+                box-shadow:
+                    0 16px 36px rgba(17, 24, 39, 0.1),
+                    0 1px 0 rgba(255, 255, 255, 0.92) inset;
+            }
+
+            .mobile-grid-item:hover::before,
+            .mobile-grid-item:focus-visible::before {
+                opacity: 1;
+            }
+
+            .mobile-grid-item:active {
+                transform: translateY(0);
+            }
+
+            .mobile-grid-item:focus-visible {
+                outline: 2px solid rgba(0, 104, 55, 0.28);
+                outline-offset: 2px;
+            }
+
+            .mobile-grid-title {
+                font-family: var(--font-geometric);
+                font-size: 15px;
+                font-weight: 650;
+                color: #111827;
+                letter-spacing: var(--letter-spacing-wide);
+                line-height: 1.2;
+                min-width: 0;
+            }
+
+            .mobile-grid-desc {
+                display: block;
+                font-size: 12px;
+                color: #6b7280;
+                line-height: 1.4;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            /* Footer actions (full-width CTAs) */
+            .mobile-menu-footer {
+                padding: 12px 14px 16px;
+            }
+
+            .mobile-menu-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .mobile-menu-cta-primary,
+            .mobile-menu-cta-secondary {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                min-height: 52px;
+                padding: 14px;
+                border-radius: 16px;
+                font-family: var(--font-geometric);
+                font-weight: 800;
+                letter-spacing: -0.01em;
+                text-decoration: none;
+                transition:
+                    transform 180ms ease,
+                    border-color 180ms ease,
+                    box-shadow 180ms ease,
+                    background 180ms ease;
+                outline: none;
+            }
+
+            .mobile-menu-cta-primary::before,
+            .mobile-menu-cta-secondary::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                opacity: 0;
+                transition: opacity 180ms ease;
+                pointer-events: none;
+            }
+
+            .mobile-menu-cta-primary {
+                background: linear-gradient(135deg, #006837 0%, #00a855 100%);
+                color: #fff;
+                box-shadow:
+                    0 18px 40px rgba(0, 104, 55, 0.26),
+                    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+            }
+
+            .mobile-menu-cta-primary::before {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.18),
+                    rgba(255, 255, 255, 0)
+                );
+            }
+
+            .mobile-menu-cta-secondary {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.92),
+                    rgba(245, 248, 250, 0.9)
+                );
+                color: #111827;
+                border: 1px solid rgba(0, 104, 55, 0.12);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                box-shadow:
+                    0 12px 28px rgba(17, 24, 39, 0.08),
+                    0 1px 0 rgba(255, 255, 255, 0.85) inset;
+            }
+
+            .mobile-menu-cta-secondary::before {
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 104, 55, 0.12),
+                    rgba(0, 168, 85, 0.08)
+                );
+            }
+
+            .mobile-menu-cta-primary:hover,
+            .mobile-menu-cta-primary:focus-visible,
+            .mobile-menu-cta-secondary:hover,
+            .mobile-menu-cta-secondary:focus-visible {
+                transform: translateY(-2px);
+                box-shadow:
+                    0 16px 36px rgba(17, 24, 39, 0.1),
+                    0 1px 0 rgba(255, 255, 255, 0.92) inset;
+            }
+
+            .mobile-menu-cta-primary:hover::before,
+            .mobile-menu-cta-primary:focus-visible::before,
+            .mobile-menu-cta-secondary:hover::before,
+            .mobile-menu-cta-secondary:focus-visible::before {
+                opacity: 1;
+            }
+
+            .mobile-menu-cta-primary:active,
+            .mobile-menu-cta-secondary:active {
+                transform: translateY(0);
+            }
+
+            .mobile-menu-cta-primary:focus-visible,
+            .mobile-menu-cta-secondary:focus-visible {
+                outline: 2px solid rgba(0, 104, 55, 0.28);
+                outline-offset: 2px;
+            }
+
+            @media (max-width: 360px) {
+                .mobile-menu-content {
+                    padding: 10px 12px 14px;
+                }
+
+                .mobile-menu-grid {
+                    gap: 12px;
+                    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                }
+
+                .mobile-grid-item {
+                    min-height: 64px;
+                    padding: 12px;
+                }
+
+                .mobile-menu-footer {
+                    padding: 10px 12px 14px;
+                }
+
+                .mobile-menu-cta-primary,
+                .mobile-menu-cta-secondary {
+                    min-height: 50px;
+                    padding: 12px;
+                }
             }
         </style>
 
@@ -3069,17 +3130,19 @@ const nav = {
                 freshMobileMenu.classList.add("is-closing");
             }
 
-            // After the section animations finish, close the panel/backdrop
-            // timings must match CSS:
-            // close stagger max = 0.3s, transition = 0.35s => ~0.65s
-            const closeSectionsMs = 650;
-            const closePanelMs = 240; // panel/backdrop fade-out
+            // Match open/close total duration (shorter), while keeping a hint of reverse-stagger.
+            // CSS timings:
+            // - menu-section: 0.35s + max delay 0.1s => 0.45s total
+            // - panel/backdrop: ~0.25s
+            // Start panel fade slightly after close begins so everything ends together (~0.45s).
+            const closeStageMs = 200; // when to start panel/backdrop fade
+            const closeTotalMs = 450; // total close duration
 
             closeStageTimer = setTimeout(() => {
                 closeStageTimer = null;
                 // start panel/backdrop fade
                 freshMobileMenu?.classList.remove("is-open");
-            }, closeSectionsMs);
+            }, closeStageMs);
 
             closeFinalizeTimer = setTimeout(() => {
                 closeFinalizeTimer = null;
@@ -3102,7 +3165,7 @@ const nav = {
                             : "メニューを開く",
                     );
                 }
-            }, closeSectionsMs + closePanelMs);
+            }, closeTotalMs);
         }
 
         function toggleMenu() {
@@ -3138,6 +3201,12 @@ const nav = {
                 },
                 { passive: true },
             );
+        }
+
+        // Close with in-panel close button (if present)
+        const closeBtn = freshMobileMenu.querySelector(".mobile-menu-close");
+        if (closeBtn) {
+            closeBtn.addEventListener("click", () => closeMenu());
         }
 
         // Swipe to close (downward, and only when content is at the top to avoid accidental closes while scrolling)
@@ -3612,10 +3681,13 @@ const nav = {
     document.addEventListener('astro:page-load', initFloatingLabels);
 
     // ===========================================
-    // SCROLL REVEAL - Organic Animation
+    // SCROLL REVEAL - Organic Animation (Enhanced)
     // ===========================================
     function initScrollReveal() {
-        const revealElements = document.querySelectorAll('.scroll-reveal');
+        // すべてのscroll-reveal系のクラスを持つ要素を取得
+        const revealElements = document.querySelectorAll(
+            '.scroll-reveal, .scroll-reveal-fade, .scroll-reveal-slide-up, .scroll-reveal-slide-left, .scroll-reveal-slide-right, .scroll-reveal-scale, .scroll-reveal-rotate'
+        );
         
         if (revealElements.length === 0) return;
         
@@ -3637,7 +3709,7 @@ const nav = {
             },
             {
                 threshold: 0.1,
-                rootMargin: '0px 0px -80px 0px'
+                rootMargin: '0px 0px -50px 0px' // 要素が50px見えたら発動
             }
         );
         

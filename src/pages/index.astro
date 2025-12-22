@@ -1,6 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getLectures, getUpcomingEvents } from "../library/microcms";
+import FluidGradient from "../components/FluidGradient.astro";
+import Marquee from "../components/Marquee.astro";
+import MagneticButton from "../components/MagneticButton.astro";
+import { getLectures, getUpcomingEvents, getPages } from "../library/microcms";
 
 // Fetch lectures (limit to 4 for homepage display)
 const response = await getLectures({
@@ -28,6 +31,19 @@ const lectures = response.contents
 const upcomingResponse = await getUpcomingEvents();
 const upcomingEvents = upcomingResponse.contents;
 
+// Fetch sponsors for marquee
+let sponsors: Array<{ name: string; logo?: string; url?: string }> = [];
+try {
+    const pages = await getPages();
+    sponsors = (pages.sponsors || []).map((s: any) => ({
+        name: s.name,
+        logo: s.logo?.url,
+        url: s.url
+    }));
+} catch (error) {
+    console.error("Error fetching sponsors:", error);
+}
+
 // SEO
 const seo = {
     title: "AIU Cedar Society - 秋田とAIU生の可能性をつなぐ",
@@ -43,13 +59,8 @@ const seo = {
     <div
         class="bg-gradient-to-b from-gray-50 to-white min-h-screen relative overflow-hidden washi-texture"
     >
-        {/* Animated Background Gradient with Parallax */}
-        <div
-            id="parallax-bg"
-            class="absolute inset-0 bg-gradient-to-br from-[#006837]/3 via-transparent to-gray-100/50 pointer-events-none"
-            style="will-change: transform;"
-        >
-        </div>
+        {/* Fluid Gradient Background */}
+        <FluidGradient />
 
         {/* Hero Section with 3D Depth */}
         <section
@@ -212,9 +223,11 @@ const seo = {
 
                         {/* Mobile View All Button */}
                         <div class="mt-8 sm:hidden text-center">
-                            <a
+                            <MagneticButton
                                 href="/events/upcoming"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-[#006837] text-white rounded-lg hover:bg-[#005028] transition-colors duration-300 btn-ripple-enhanced btn-organic typography-button"
+                                strength={0.25}
+                                ariaLabel="すべての予定を見る"
                             >
                                 <span>すべての予定を見る</span>
                                 <svg
@@ -230,7 +243,7 @@ const seo = {
                                         d="M9 5l7 7-7 7"
                                     />
                                 </svg>
-                            </a>
+                            </MagneticButton>
                         </div>
                     </div>
                 </section>
@@ -425,9 +438,11 @@ const seo = {
 
             {/* View All Button - モバイル用 */}
             <div class="mt-10 md:mt-12 text-center">
-                <a
+                <MagneticButton
                     href="/events/past"
                     class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#006837] text-[#006837] rounded-lg hover:bg-[#006837] hover:text-white transition-all duration-300 shadow-md hover:shadow-lg min-h-[44px] typography-button"
+                    strength={0.25}
+                    ariaLabel="すべての講演会を見る"
                 >
                     <span>すべての講演会を見る</span>
                     <svg
@@ -442,9 +457,51 @@ const seo = {
                             stroke-width="2"
                             d="M9 5l7 7-7 7"></path>
                     </svg>
-                </a>
+                </MagneticButton>
             </div>
         </main>
+
+        {/* Sponsors Marquee Section */}
+        {sponsors.length > 0 && (
+            <section class="py-12 md:py-16 bg-gradient-to-b from-white to-gray-50">
+                <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+                    <div class="mb-8 scroll-reveal-slide-up">
+                        <h2 class="typography-section text-center mb-4">
+                            協賛<span class="text-[#006837]">企業</span>
+                        </h2>
+                        <p class="text-center text-gray-600 max-w-2xl mx-auto">
+                            AIU Cedar Societyの活動を支援してくださるパートナーの皆様
+                        </p>
+                    </div>
+                    <Marquee 
+                        items={sponsors} 
+                        speed="normal" 
+                        direction="left" 
+                    />
+                    <div class="mt-8 text-center">
+                        <a
+                            href="/sponsors"
+                            class="inline-flex items-center gap-2 text-sm text-[#006837] hover:gap-3 transition-all duration-300 typography-nav"
+                        >
+                            <span>すべての協賛企業を見る</span>
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        )}
     </div>
 </Layout>
 

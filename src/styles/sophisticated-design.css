@@ -296,6 +296,82 @@
 .scroll-reveal-delay-2 { transition-delay: 0.2s; }
 .scroll-reveal-delay-3 { transition-delay: 0.3s; }
 .scroll-reveal-delay-4 { transition-delay: 0.4s; }
+.scroll-reveal-delay-5 { transition-delay: 0.5s; }
+
+/* より多様なアニメーション効果 */
+.scroll-reveal-fade {
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.scroll-reveal-fade.revealed {
+    opacity: 1;
+}
+
+.scroll-reveal-slide-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: 
+        opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.scroll-reveal-slide-up.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-reveal-slide-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: 
+        opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.scroll-reveal-slide-left.revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-reveal-slide-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: 
+        opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.scroll-reveal-slide-right.revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: 
+        opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.scroll-reveal-scale.revealed {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.scroll-reveal-rotate {
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.95);
+    transition: 
+        opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.scroll-reveal-rotate.revealed {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
 
 /* Organic hover - brush stroke effect */
 .organic-hover {
@@ -487,8 +563,126 @@
    ACCESSIBILITY
    ================================ */
 
+/* ================================
+   GLASSMORPHISM 2.0
+   ================================ */
+
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 104, 55, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        0 4px 16px 0 rgba(0, 104, 55, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 
+        0 8px 24px 0 rgba(0, 104, 55, 0.12),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+    transform: translateY(-2px);
+}
+
+.glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 104, 55, 0.1);
+    box-shadow: 0 2px 16px 0 rgba(0, 104, 55, 0.05);
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 2px 8px 0 rgba(0, 104, 55, 0.05),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 104, 55, 0.3);
+    box-shadow: 
+        0 4px 12px 0 rgba(0, 104, 55, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+}
+
+/* グラデーションボーダー付きガラス */
+.glass-gradient {
+    position: relative;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid transparent;
+}
+
+.glass-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 104, 55, 0.3),
+        rgba(139, 111, 71, 0.2),
+        rgba(0, 104, 55, 0.3)
+    );
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* ブラウザサポートのフォールバック */
+@supports not (backdrop-filter: blur(20px)) {
+    .glass,
+    .glass-dark,
+    .glass-card,
+    .glass-nav,
+    .glass-input,
+    .glass-gradient {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .scroll-reveal,
+    .scroll-reveal-fade,
+    .scroll-reveal-slide-up,
+    .scroll-reveal-slide-left,
+    .scroll-reveal-slide-right,
+    .scroll-reveal-scale,
+    .scroll-reveal-rotate,
     .organic-hover::before,
     .btn-organic::before,
     .img-organic-hover,
@@ -498,7 +692,13 @@
         transform: none !important;
     }
     
-    .scroll-reveal {
+    .scroll-reveal,
+    .scroll-reveal-fade,
+    .scroll-reveal-slide-up,
+    .scroll-reveal-slide-left,
+    .scroll-reveal-slide-right,
+    .scroll-reveal-scale,
+    .scroll-reveal-rotate {
         opacity: 1;
     }
 }

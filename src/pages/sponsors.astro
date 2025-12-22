@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Breadcrumb from "../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../components/BreadcrumbSchema.astro";
+import Marquee from "../components/Marquee.astro";
 import { getPages, type SponsorItem } from "../library/microcms";
 
 // Fetch sponsors from Pages API
@@ -70,7 +71,25 @@ const breadcrumbItems = [{ label: "ホーム", href: "/" }, { label: "協賛企�
             {/* Sponsors Content */}
             {
                 sponsors.length > 0 ? (
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <>
+                        {/* Marquee Section for Sponsors */}
+                        <div class="mb-12 scroll-reveal-slide-up">
+                            <h2 class="typography-section mb-6 text-center">
+                                協賛企業
+                            </h2>
+                            <Marquee 
+                                items={sponsors.map(s => ({
+                                    name: s.name,
+                                    logo: s.logo?.url,
+                                    url: s.url
+                                }))} 
+                                speed="normal" 
+                                direction="left" 
+                            />
+                        </div>
+
+                        {/* Grid Layout for Detailed View */}
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 scroll-reveal-slide-up scroll-reveal-stagger-1">
                         {sponsors.map((sponsor) => (
                             <a
                                 href={sponsor.url || "#"}
@@ -131,7 +150,8 @@ const breadcrumbItems = [{ label: "ホーム", href: "/" }, { label: "協賛企�
                                 </div>
                             </a>
                         ))}
-                    </div>
+                        </div>
+                    </>
                 ) : (
                     <div class="bg-white rounded-lg shadow-md p-8 text-center">
                         <svg

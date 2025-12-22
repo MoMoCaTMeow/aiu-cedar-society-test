@@ -4,6 +4,7 @@ import { getLectures } from "../../library/microcms";
 import type { GetStaticPaths } from "astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../components/BreadcrumbSchema.astro";
+import ReadingTime from "../../components/ReadingTime.astro";
 
 // Generate static paths for all lectures
 export const getStaticPaths = (async () => {
@@ -217,6 +218,11 @@ const breadcrumbItems = [
             イベント詳細
           </h2>
         </div>
+
+        {/* Reading Time Indicator */}
+        {lecture.content && (
+          <ReadingTime content={lecture.content} />
+        )}
 
         {/* Body Content with enhanced prose */}
         <div
