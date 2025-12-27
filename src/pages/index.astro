@@ -73,20 +73,18 @@ const seo = {
                         >
                         </div>
                         <h1 class="typography-hero pl-6">
-                            <span class="inline-block hero-text-1"
+                            <span class="hero-text-1"
                                 >秋田とAIU生の可能性を</span
                             ><span
-                                class="text-[#006837] inline-block hero-text-2 typography-hero-accent"
+                                class="text-[#006837] hero-text-2 typography-hero-accent"
                                 >つなぐ</span
                             >
                         </h1>
                     </div>
                     <p
-                        class="text-base md:text-lg text-gray-600 leading-relaxed pl-6 max-w-2xl hero-description"
+                        class="text-base md:text-lg text-gray-600 leading-relaxed pl-6 hero-description"
                     >
-                        AIU Cedar
-                        Societyは、学生の熱意と秋田社会の架け橋となります。<br
-                        />
+                        AIU Cedar Societyは、学生の熱意と秋田社会の架け橋となります。<br />
                         「出会い・学び・実践」のサイクルを創り出し、秋田の地で新たな価値を生み出していきます。
                     </p>
                 </div>
@@ -521,14 +519,52 @@ const seo = {
 
     .hero-text-1 {
         animation: fade-in-right 0.8s ease-out 0.3s both;
+        /* Prevent awkward line breaks in Japanese text */
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        display: inline;
     }
 
     .hero-text-2 {
         animation: fade-in-right 0.8s ease-out 0.5s both;
+        /* Prevent awkward line breaks in Japanese text */
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        display: inline;
+    }
+    
+    /* iPad size (768px-1024px) specific adjustments */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .typography-hero {
+            /* Ensure proper line breaks on iPad */
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        .hero-text-1,
+        .hero-text-2 {
+            /* Allow natural wrapping on iPad */
+            display: inline;
+            white-space: normal;
+        }
     }
 
     .hero-description {
         animation: fade-in 1s ease-out 0.7s both;
+        /* Japanese text line break control */
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        hyphens: none;
+        /* Match the width of hero-text-1 (same as typography-hero) */
+        max-width: 100%;
+    }
+    
+    /* Ensure hero-description matches hero-text-1 width on all screen sizes */
+    @media (min-width: 768px) {
+        .hero-description {
+            /* Match hero-text-1 width - no max-width constraint */
+            max-width: none;
+        }
     }
 
     /* Section Header Animation */

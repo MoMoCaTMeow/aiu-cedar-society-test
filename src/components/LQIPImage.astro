@@ -1,0 +1,142 @@
+---
+/**
+ * LQIPImage - Low Quality Image Placeholder component
+ * Shows a blurred low-quality version while the full image loads
+ */
+import { Image } from "astro:assets";
+
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  lqipSrc?: string; // Low quality placeholder URL (optional)
+  className?: string;
+  format?: "avif" | "webp" | "png" | "jpg";
+  quality?: "low" | "mid" | "high";
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+  sizes?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  lqipSrc,
+  className = "",
+  format = "avif",
+  quality = "mid",
+  loading = "lazy",
+  fetchpriority = "auto",
+  sizes = "100vw",
+} = Astro.props;
+
+// Generate LQIP if not provided (using microCMS's image API with low quality)
+const placeholderUrl = lqipSrc || `${src}?w=20&q=20&blur=10`;
+---
+
+<div class="lqip-container" style={`aspect-ratio: ${width} / ${height};`}>
+  <!-- Low Quality Placeholder (blurred) -->
+  <img
+    src={placeholderUrl}
+    alt=""
+    class="lqip-placeholder"
+    aria-hidden="true"
+    loading="eager"
+    decoding="async"
+  />
+  
+  <!-- Full Quality Image -->
+  <Image
+    src={src}
+    width={width}
+    height={height}
+    alt={alt}
+    format={format}
+    quality={quality}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    sizes={sizes}
+    class={`lqip-image ${className}`}
+  />
+</div>
+
+<style>
+  .lqip-container {
+    position: relative;
+    overflow: hidden;
+    background: #f0f0f0;
+    width: 100%;
+  }
+
+  .lqip-placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(10px);
+    transform: scale(1.1); /* Prevent blur edge artifacts */
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .lqip-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Show full image when loaded */
+  .lqip-image[data-loaded="true"],
+  .lqip-image:not([loading="lazy"]) {
+    opacity: 1;
+  }
+
+  .lqip-image[data-loaded="true"] ~ .lqip-placeholder,
+  .lqip-image:not([loading="lazy"]) ~ .lqip-placeholder {
+    opacity: 0;
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .lqip-container {
+      background: #2a2a2a;
+    }
+  }
+</style>
+
+<script>
+  // Mark image as loaded when it finishes loading
+  document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('.lqip-image');
+    images.forEach((img) => {
+      if (img.complete) {
+        img.setAttribute('data-loaded', 'true');
+      } else {
+        img.addEventListener('load', () => {
+          img.setAttribute('data-loaded', 'true');
+        });
+      }
+    });
+  });
+
+  // Support for Astro page transitions
+  document.addEventListener('astro:page-load', () => {
+    const images = document.querySelectorAll('.lqip-image');
+    images.forEach((img) => {
+      if (img.complete) {
+        img.setAttribute('data-loaded', 'true');
+      } else {
+        img.addEventListener('load', () => {
+          img.setAttribute('data-loaded', 'true');
+        });
+      }
+    });
+  });
+</script>

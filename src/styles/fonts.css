@@ -1,4 +1,14 @@
 /* Noto Sans JP - Self-hosted for performance */
+/* Fallback font with size-adjust to prevent CLS */
+@font-face {
+  font-family: 'Noto Sans JP Fallback';
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
 /* Regular 400 - Latin subset */
 @font-face {
   font-family: 'Noto Sans JP';

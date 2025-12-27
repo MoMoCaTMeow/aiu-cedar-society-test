@@ -119,6 +119,10 @@ const nav = {
                     "Helvetica Neue", Arial, sans-serif;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
+                /* Japanese text line break control */
+                word-break: keep-all;
+                overflow-wrap: break-word;
+                hyphens: none;
                 /*
                   背景が transparent だと、iOS/Safari のオーバースクロール等で
                   背景が白く“浮いて”見えることがあるため、ベース背景を固定。
@@ -133,6 +137,11 @@ const nav = {
                 min-height: 100vh;
                 line-height: 1.75;
                 background-color: var(--bg-primary, #fef9f4);
+                /* Japanese text line break control */
+                word-break: keep-all;
+                overflow-wrap: break-word;
+                hyphens: none;
+                line-break: strict;
             }
         </style>
 
@@ -385,7 +394,7 @@ const nav = {
 
                 /* Typography */
                 --font-sans:
-                    "Noto Sans JP", -apple-system, BlinkMacSystemFont,
+                    "Noto Sans JP", "Noto Sans JP Fallback", -apple-system, BlinkMacSystemFont,
                     sans-serif;
                 --font-geometric: "Lato", "Noto Sans JP", sans-serif;
                 --font-mincho: "Shippori Mincho", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "HiraMinProN-W3", "MS PMincho", serif;
@@ -689,7 +698,16 @@ const nav = {
                 border-color: #38383a !important;
             }
 
-            /* Font Display Optimization */
+            /* Font Display Optimization with size-adjust for CLS prevention */
+            @font-face {
+                font-family: "Noto Sans JP Fallback";
+                src: local("Arial"), local("Helvetica");
+                size-adjust: 100%;
+                ascent-override: 95%;
+                descent-override: 25%;
+                line-gap-override: 0%;
+            }
+            
             @font-face {
                 font-family: "Noto Sans JP";
                 font-display: swap;
@@ -3057,11 +3075,23 @@ const nav = {
 
 <style>
     :root {
-        --font-sans: "Noto Sans JP", sans-serif;
+        --font-sans: "Noto Sans JP", "Noto Sans JP Fallback", sans-serif;
         --color-aiu-green: #006837;
     }
     html {
         font-family: var(--font-sans);
+        /* Japanese text line break control */
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        hyphens: none;
+    }
+    
+    body {
+        /* Japanese text line break control */
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        hyphens: none;
+        line-break: strict;
     }
 
     /* Desktop hover support */
