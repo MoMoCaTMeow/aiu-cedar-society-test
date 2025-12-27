@@ -1,12 +1,21 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getMembers } from "../../library/microcms";
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../components/BreadcrumbSchema.astro";
 
-// Fetch members
-const response = await getMembers();
-const members = response.contents;
+// Fetch members using Content Layer API
+const allMembers = await getCollection("members");
+const members = allMembers.map((member) => ({
+    id: member.id,
+    name: member.data.name,
+    position: member.data.position,
+    year: member.data.year,
+    description: member.data.description,
+    status: member.data.status,
+    image: member.data.image,
+}));
 
 // Group members by status (配列対応)
 const getStatus = (member: any) => {
@@ -116,14 +125,14 @@ const breadcrumbItems = [
                                 <div class={`bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow member-card glass-card scroll-reveal-slide-up scroll-reveal-stagger-${Math.min(index + 1, 5)}`}>
                                     <div class="flex items-start gap-4">
                                         {member.image ? (
-                                            <img
-                                                src={`${member.image.url}?w=128&fm=webp&q=60`}
-                                                srcset={`${member.image.url}?w=128&fm=webp&q=60 1x, ${member.image.url}?w=256&fm=webp&q=60 2x`}
+                                            <Image
+                                                src={member.image.url}
+                                                width={member.image.width}
+                                                height={member.image.height}
                                                 alt={member.name}
-                                                width="64"
-                                                height="64"
+                                                format="avif"
+                                                quality="mid"
                                                 loading="lazy"
-                                                decoding="async"
                                                 class="w-16 h-16 rounded-full object-cover shadow-md flex-shrink-0"
                                             />
                                         ) : (
@@ -195,14 +204,14 @@ const breadcrumbItems = [
                                 <div class={`bg-gray-50 rounded-lg p-6 border-l-4 border-gray-400 hover:shadow-md transition-shadow smooth-hover glass-card scroll-reveal-slide-up scroll-reveal-stagger-${Math.min(index + 1, 5)}`}>
                                     <div class="flex items-start gap-4">
                                         {member.image ? (
-                                            <img
-                                                src={`${member.image.url}?w=128&fm=webp&q=60`}
-                                                srcset={`${member.image.url}?w=128&fm=webp&q=60 1x, ${member.image.url}?w=256&fm=webp&q=60 2x`}
+                                            <Image
+                                                src={member.image.url}
+                                                width={member.image.width}
+                                                height={member.image.height}
                                                 alt={member.name}
-                                                width="64"
-                                                height="64"
+                                                format="avif"
+                                                quality="mid"
                                                 loading="lazy"
-                                                decoding="async"
                                                 class="w-16 h-16 rounded-full object-cover shadow-md flex-shrink-0 grayscale opacity-80"
                                             />
                                         ) : (

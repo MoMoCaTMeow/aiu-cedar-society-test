@@ -1,12 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getUpcomingEvents } from "../../library/microcms";
+import { getCollection } from "astro:content";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../components/BreadcrumbSchema.astro";
 
-// Fetch upcoming events
-const response = await getUpcomingEvents();
-const events = response.contents;
+// Fetch upcoming events using Content Layer API
+const allEvents = await getCollection("upcoming_events");
+const events = allEvents.map((event) => ({
+    id: event.id,
+    title: event.data.title,
+    event_date: event.data.event_date,
+    description: event.data.description,
+    location: event.data.location,
+}));
 
 // SEO
 const seo = {

@@ -1,6 +1,6 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import { getUpcomingEvents } from "../../../library/microcms";
+import { getCollection } from "astro:content";
 import Breadcrumb from "../../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../../components/BreadcrumbSchema.astro";
 import { formatDateTime } from "../../../i18n/utils";
@@ -8,9 +8,15 @@ import { formatDateTime } from "../../../i18n/utils";
 // Helper to get English content or fallback to Japanese
 const getContent = (en: string | undefined, ja: string) => en || ja;
 
-// Fetch upcoming events
-const response = await getUpcomingEvents();
-const events = response.contents;
+// Fetch upcoming events using Content Layer API
+const allEvents = await getCollection("upcoming_events");
+const events = allEvents.map((event) => ({
+    id: event.id,
+    title: event.data.title,
+    event_date: event.data.event_date,
+    description: event.data.description,
+    location: event.data.location,
+}));
 
 // SEO
 const seo = {

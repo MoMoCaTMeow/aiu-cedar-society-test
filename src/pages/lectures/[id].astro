@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getLectures } from "../../library/microcms";
+import { getCollection, getEntry } from "astro:content";
+import { Image } from "astro:assets";
 import type { GetStaticPaths } from "astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../components/BreadcrumbSchema.astro";
@@ -8,8 +9,8 @@ import ReadingTime from "../../components/ReadingTime.astro";
 
 // Generate static paths for all lectures
 export const getStaticPaths = (async () => {
-  const response = await getLectures({ fields: ["id"] });
-  return response.contents.map((lecture) => ({
+  const lectures = await getCollection("lectures");
+  return lectures.map((lecture) => ({
     params: { id: lecture.id },
   }));
 }) satisfies GetStaticPaths;
@@ -21,24 +22,23 @@ if (!id) {
   return Astro.redirect("/404");
 }
 
-// Fetch the lecture data using filters
-const response = await getLectures({
-  filters: `id[equals]${id}`,
-  fields: [
-    "id",
-    "title",
-    "guest_name",
-    "belonging",
-    "event_date",
-    "eyecatch",
-    "content",
-  ],
-});
-const lecture = response.contents[0];
+// Fetch the lecture data using Content Layer API
+const lectureEntry = await getEntry("lectures", id);
 
-if (!lecture) {
+if (!lectureEntry) {
   return Astro.redirect("/404");
 }
+
+// Map to expected structure
+const lecture = {
+  id: lectureEntry.id,
+  title: lectureEntry.data.title,
+  guest_name: lectureEntry.data.guest_name,
+  belonging: lectureEntry.data.belonging,
+  event_date: lectureEntry.data.event_date,
+  eyecatch: lectureEntry.data.eyecatch,
+  content: lectureEntry.data.content,
+};
 
 // SEO
 const seo = {
@@ -176,15 +176,15 @@ const breadcrumbItems = [
             <div class="mt-8 flex justify-center">
               <div class="max-w-[240px] shadow-md rounded-lg overflow-hidden">
                 <div class="aspect-[210/297] w-full bg-gray-100">
-                  <img
-                    src={`${lecture.eyecatch.url}?w=480&fm=webp&q=60`}
-                    srcset={`${lecture.eyecatch.url}?w=480&fm=webp&q=60 1x, ${lecture.eyecatch.url}?w=960&fm=webp&q=60 2x`}
+                  <Image
+                    src={lecture.eyecatch.url}
+                    width={lecture.eyecatch.width}
+                    height={lecture.eyecatch.height}
                     alt={lecture.title}
-                    width="480"
-                    height="680"
+                    format="avif"
+                    quality="mid"
                     loading="eager"
                     fetchpriority="high"
-                    decoding="async"
                     class="w-full h-full object-cover"
                   />
                 </div>
@@ -266,7 +266,7 @@ const breadcrumbItems = [
 </Layout>
 
 <style>
-  /* Reading Progress Bar Styles */
+  /* Reading Progress Bar Styles - Using Scroll-driven Animations (No JavaScript) */
   .reading-progress-container {
     position: fixed;
     top: 0;
@@ -280,32 +280,53 @@ const breadcrumbItems = [
   .reading-progress-bar {
     height: 100%;
     background: linear-gradient(to right, #006837, #00a84f);
-    width: 0%;
-    transition: width 0.1s ease-out;
+    transform-origin: 0 50%;
+    animation: grow-progress auto linear;
+    /* Bind animation to scroll position */
+    animation-timeline: scroll(root);
+  }
+
+  @keyframes grow-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Fallback for browsers without scroll-driven animations support */
+  @supports not (animation-timeline: scroll(root)) {
+    .reading-progress-bar {
+      width: 0%;
+      transition: width 0.1s ease-out;
+    }
   }
 </style>
 
 <script>
-  // Reading Progress Bar
-  window.addEventListener(
-    "scroll",
-    function () {
-      const winScroll =
-        document.body.scrollTop || document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
+  // Fallback for browsers without scroll-driven animations support
+  if (!CSS.supports("animation-timeline", "scroll(root)")) {
+    window.addEventListener(
+      "scroll",
+      function () {
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop;
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
 
-      const progressBar = document.querySelector(
-        ".reading-progress-bar",
-      );
-      if (progressBar) {
-        (progressBar as any).style.width = scrolled + "%";
-      }
-    },
-    { passive: true },
-  );
+        const progressBar = document.querySelector(
+          ".reading-progress-bar",
+        );
+        if (progressBar) {
+          (progressBar as any).style.width = scrolled + "%";
+        }
+      },
+      { passive: true },
+    );
+  }
 </script>
 
 

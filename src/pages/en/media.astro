@@ -2,15 +2,22 @@
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../components/BreadcrumbSchema.astro";
-import { getMediaCoverage } from "../../library/microcms";
+import { getCollection } from "astro:content";
 import { formatDateTime } from "../../i18n/utils";
 
 // Helper to get English content or fallback to Japanese
 const getContent = (en: string | undefined, ja: string) => en || ja;
 
-// Fetch media coverage
-const response = await getMediaCoverage();
-const mediaCoverage = response.contents;
+// Fetch media coverage using Content Layer API
+const allMediaCoverage = await getCollection("media_coverage");
+const mediaCoverage = allMediaCoverage.map((item) => ({
+    id: item.id,
+    title: item.data.title,
+    media_name: item.data.media_name,
+    publish_date: item.data.publish_date,
+    url: item.data.url,
+    description: item.data.description,
+}));
 
 // SEO
 const seo = {

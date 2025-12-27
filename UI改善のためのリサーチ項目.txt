@@ -1,0 +1,265 @@
+﻿2025年におけるWeb UI/UXモダナイゼーション戦略：momo1105.comのための包括的実装レポート
+1. 序論：2025年のWebデザインにおける「没入感」と「軽量化」の収斂
+現在のWebエコシステムにおいて、ユーザーインターフェース（UI）とユーザー体験（UX）の設計思想は、かつてないほどの大きな転換点を迎えている。過去10年間、Webデザインはリッチな体験を提供するために、重厚なJavaScriptライブラリや複雑なDOM操作に依存してきた傾向があった。しかし、2025年に向けたトレンドは、これらを否定し、「ブラウザネイティブ機能への回帰」と「パフォーマンスを犠牲にしない没入感」の追求へとシフトしている。
+本レポートは、https://momo1105.com/ のUI/UXを刷新し、現代的かつ高パフォーマンスなサイトへと昇華させるための技術的およびデザイン的戦略を包括的に分析したものである。特に、ユーザー体験を劇的に向上させつつ、GoogleのCore Web Vitals（CWV）指標、特にFirst Input Delay（FID）やCumulative Layout Shift（CLS）を悪化させない「軽量な実装」に主眼を置いている。
+分析の核心にあるのは、JavaScriptメインスレッドの負荷軽減である。従来、スクロール連動アニメーションや複雑なグリッドレイアウト、画像の最適化処理はJavaScriptが担っていたが、これらは現在、CSSの新しい仕様（Scroll-Driven Animations、Container Queries、Grid Level 2）や、Astroのような次世代アイランドアーキテクチャによって、より効率的かつ宣言的に解決可能となっている。本稿では、これらの技術がいかにして「New Materialism（新しい唯物論）」と呼ばれる2025年のデザイン潮流 1 を支え、ユーザーにシームレスな体験を提供するかを詳述する。
+________________
+2. 構造的デザインパラダイム：Bento Grid（弁当グリッド）の採用
+2025年のレイアウトトレンドにおいて、最も支配的かつ機能的なアプローチとして確立されているのが「Bento Grid（弁当グリッド）」である 1。これは日本の伝統的な弁当箱にインスピレーションを得たモジュール式のレイアウトであり、情報の階層構造を視覚的に整理しつつ、遊び心と機能性を両立させる手法である。
+2.1 線形レイアウトからの脱却と情報の区画化
+従来のWebサイト、特にブログやポートフォリオサイトでは、コンテンツが垂直方向に積み重なる「リスト形式」や、均一なカードが並ぶ単純なグリッドが主流であった。しかし、Bento Gridはこの単調さを打破する。このレイアウトの本質は「計算された非対称性」にある。大小異なるサイズのセル（区画）を組み合わせることで、デザイナーはユーザーの視線を意図的に誘導することが可能となる 3。
+例えば、momo1105.com において、最新のブログ記事や主要なプロジェクト紹介を「2×2」の大きなセルに配置し、SNSリンクや短いステータス更新を「1×1」の小さなセルに配置することで、視覚的な重み付けを自然に行うことができる。これは単なる装飾ではなく、認知的負荷を軽減するためのUX戦略である。ユーザーは情報を巨大な塊としてではなく、消化可能な「バイトサイズ」の情報の集合体として処理できるため、探索的で直感的なブラウジング体験が可能となる 1。
+2.2 CSS Grid Level 2による技術的実装
+Bento Gridを軽量かつレスポンシブに実装するためには、CSS Grid Layout Module Level 2の高度な機能を活用する必要がある。特に重要なのが grid-template-rows と grid-template-columns の動的な定義、そして grid-auto-flow: dense アルゴリズムの活用である 4。
+2.2.1 grid-auto-flow: dense による空間充填
+かつて、異なる高さの要素を隙間なく並べる「メイソンリー（組積造）レイアウト」を実現するには、Masonry.jsのような重いJavaScriptライブラリが必須であった。これはDOMの再計算を頻繁に引き起こし、パフォーマンス（特にレイアウトスラッシング）の低下を招いていた。
+しかし、現代のCSSでは grid-auto-flow: dense を親コンテナに適用することで、ブラウザのレイアウトエンジンが自動的にグリッド内の「空きスペース」を検知し、後続の小さな要素で埋め合わせる処理を行う。これにより、JavaScriptを一切使用せずに、密度の高い、視覚的に美しいレイアウトを実現できる 4。
+実装の論理構成：
+1. グリッド定義: 親コンテナに対して12カラムなどの多層グリッドを定義する。
+2. スパン（Span）の活用: 各カード要素に対して、その重要度に応じたサイズクラス（例：.hero-card は grid-column: span 2; grid-row: span 2;）を割り当てる 5。
+3. Subgridの導入: カード内部のレイアウト整合性を保つために grid-template-columns: subgrid を採用する。これにより、カード内部のタイトルや画像の配置ラインが、親グリッドのトラックと完全に同期し、ピクセル単位での精密な整列が可能となる。
+2.3 比較分析：従来のグリッドシステム対Bento Grid
+特徴
+	従来のBootstrap的グリッド (12カラム)
+	Bento Grid (CSS Grid + Dense)
+	UXへの影響とメリット
+	情報の流れ
+	線形的 (Z型またはF型)
+	非線形的・探索的
+	ユーザーは興味のあるモジュールを自由に選択でき、回遊性が向上する。
+	レスポンシブ
+	行ごとの折り返し (単調)
+	コンテナに応じた再配置
+	画面サイズが変わっても情報の「塊」としての意味が保たれる。
+	実装コスト
+	低 (クラス指定のみ)
+	中 (設計が必要)
+	設計コストはかかるが、JavaScript依存を排除できるためパフォーマンスが高い。
+	視覚的階層
+	フォントサイズや色に依存
+	物理的な占有面積に依存
+	より直感的に「何が重要か」が伝わる。
+	________________
+3. レスポンシブデザインの進化：CSS Container Queries
+Bento Gridのような複雑なレイアウトを導入する際、従来の「メディアクエリ（Media Queries）」だけでは限界がある。2025年のWeb標準においては、「コンテナクエリ（Container Queries）」がレスポンシブデザインの新たな主役となっている 6。
+3.1 ビューポートからコンテナへの視点転換
+メディアクエリは「ブラウザのウィンドウ幅」に基づいてスタイルを変更する。しかし、Bento Grid内の特定のカードが、サイドバーに配置される場合と、メインコンテンツエリアに配置される場合では、利用可能な幅が全く異なる。ウィンドウ幅が広くても、サイドバー内のカードは狭いスペースに適応しなければならない。
+コンテナクエリ（@container）を使用することで、要素は「自身が置かれている親コンテナの幅」に応じてスタイルを変化させることが可能になる 8。これにより、momo1105.com の各UIコンポーネント（記事カード、プロフィールウィジェットなど）は、どこに配置されても自律的に最適なレイアウトを維持する「真のモジュール性」を獲得する。
+3.2 実装戦略と後方互換性
+実装においては、親要素に container-type: inline-size; を指定し、子要素で @container (max-width: 400px) {... } のように記述する。これにより、例えばプロフィールカードが狭い領域では「縦積みレイアウト」に、広い領域では「画像とテキストが横並びのレイアウト」に、自動的かつ滑らかに変形する 7。
+この技術は、Tailwind CSSなどのユーティリティファーストなフレームワークとも統合が進んでおり（@tailwindcss/container-queriesプラグインなど）、開発効率を損なうことなく導入が可能である 10。JavaScriptによる ResizeObserver の使用を完全に排除できるため、レンダリングパフォーマンスの向上に直結する。
+________________
+4. 没入感の演出：Scroll-Driven Animations（スクロール駆動アニメーション）
+Webサイトに「深み」と「物語性」を与えるためのアニメーションは、2025年において不可欠な要素である。しかし、これまでのJavaScript（window.addEventListener('scroll') や IntersectionObserver）を用いた実装は、メインスレッドを占有し、スクロールのたびに再計算が発生するため、「ジャンク（カクつき）」の原因となっていた 12。
+最新のWebトレンドは、これらのアニメーションをCSSネイティブの Scroll-Driven Animations API に移行することである。
+4.1 コンポジタースレッドによるパフォーマンス革命
+CSSの animation-timeline プロパティを使用することで、アニメーションの進行を「時間」ではなく「スクロール位置」にリンクさせることができる。この最大利点は、アニメーション処理がメインスレッドではなく、コンポジタースレッド（Compositor Thread） で実行される点にある 12。
+これにより、仮にメインスレッドが重いJavaScript処理（データのフェッチやハイドレーションなど）でブロックされていたとしても、スクロールアニメーションは影響を受けず、滑らかに描画され続ける。これは、UXの質（知覚的なパフォーマンス）を維持する上で極めて重要である。
+4.2 パララックス（視差効果）のCSSネイティブ化
+背景画像が手前のコンテンツよりもゆっくり動く「パララックス効果」は、高級感や奥行きを演出する定番の手法であるが、これまではJavaScriptによる複雑な計算が必要であった。
+Scroll-Driven Animationsを用いれば、以下のようなシンプルなCSS記述のみで、高パフォーマンスなパララックスを実現できる 14：
+
+
+CSS
+
+
+
+
+@keyframes parallax-move {
+ from { transform: translateY(0); }
+ to { transform: translateY(-100px); }
+}
+
+.parallax-bg {
+ animation: parallax-move linear;
+ animation-timeline: scroll(); /* スクロール全体に連動 */
+}
+
+この宣言的なアプローチにより、ブラウザは描画の最適化を事前に行うことができ、従来の手法で見られたようなスクロールとの「ズレ」や「遅延」が解消される。
+4.3 読書進捗インジケーターの実装
+ブログ記事などの長文コンテンツにおいて、現在の読書位置を示すプログレスバーは有用なUIパターンである。これも animation-timeline: scroll(root) を使用することで、JavaScriptを一行も書かずに実装可能である。transform: scaleX(0) から scaleX(1) へのアニメーションをスクロールにバインドするだけで、完璧に同期したプログレスバーが実現する 16。
+________________
+5. 視覚的トレンド：Glassmorphism（グラスモーフィズム）の洗練
+「Glassmorphism（すりガラス効果）」は、2025年も引き続き重要なデザイン言語であり続けている。特に「New Materialism」の文脈において、デジタル空間に物理的な質感（テクスチャ）を持ち込む手法として定着している 1。しかし、この表現は計算コストが高く、実装を誤るとモバイルデバイスのバッテリーを消耗させ、フレームレートを低下させる要因となる。
+5.1 backdrop-filter の最適化とコントラスト問題
+すりガラス効果の核心はCSSプロパティ backdrop-filter: blur() にあるが、これは描画された背景ピクセルをリアルタイムでぼかす処理を行うため、GPUへの負荷が高い。
+パフォーマンスに悪影響を与えないための実装ルール:
+1. 適用範囲の限定: 画面全体ではなく、ナビゲーションバー、モーダルウィンドウ、Bento Gridの特定のカードなど、一時的または局所的な要素にのみ適用する 1。
+2. レイヤーの昇格: will-change: transform や translateZ(0) を併用し、ガラス要素を独自のコンポジットレイヤーに昇格させることで、再描画の範囲を最小限に抑える 18。
+5.2 アクセシビリティを考慮した「ハイコントラスト・グラス」
+初期のグラスモーフィズムは、背景の明度によっては文字が読みにくくなるという致命的な欠陥を抱えていた。2025年のトレンドは、アクセシビリティ（WCAG基準）をクリアする「ハイコントラスト」な実装である。
+具体的な改善策:
+* 半透明レイヤーの積層: ぼかし効果だけでなく、白や黒の半透明レイヤー（background: rgba(255, 255, 255, 0.6) など）を必ず重ねることで、背景画像に関わらず一定のコントラストを確保する 19。
+* 境界線の明示: ガラスの物理的な厚みを表現するために、border: 1px solid rgba(255, 255, 255, 0.3) のような繊細なボーダーを追加する。これは視覚障害者にとってもUIの境界を認識する助けとなる 20。
+* ノイズテクスチャの導入: わずかな「ノイズ（粒子）」を含んだSVGオーバーレイを適用することで、のっぺりとしたデジタル感を排除し、より自然な質感を与えるとともに、グラデーションのバンディング（縞模様）を防ぐ効果もある 2。
+________________
+6. アーキテクチャとアセット戦略：Astroと最新画像フォーマット
+UIの表面的な改善だけでなく、それを支える基盤技術の選定がパフォーマンスを決定づける。リサーチ結果は、コンテンツ主体のサイトにおいて Astro フレームワークの採用を強く推奨している 21。
+6.1 AstroアイランドアーキテクチャによるゼロJS
+AstroはデフォルトでHTMLを静的に生成し、必要な部分（インタラクティブなコンポーネント）のみにJavaScriptを注入する「アイランドアーキテクチャ」を採用している。ReactやVueで構築されたUIコンポーネントをそのまま利用しつつ、それらが不要な場面ではJavaScriptをブラウザに送信しない 23。これにより、momo1105.com の初期ロード時間は劇的に短縮され、FID（First Input Delay）のスコアはほぼゼロに近づく。
+6.2 次世代画像フォーマットとArt Direction
+画像はWebサイトの容量の大部分を占める。2025年の標準は、従来のJPEGやPNGではなく、AVIF フォーマットの全面採用である。AVIFはWebPと比較してもさらに高い圧縮率を誇り、特にグラスモーフィズムで多用されるグラデーションの表現力に優れている 24。
+<Picture> コンポーネントによるArt Direction:
+単に画像を縮小するだけでは不十分である。デスクトップでは横長の広大な風景画像が適していても、モバイルでは被写体が小さくなりすぎて伝わらない場合がある。Astroの <Picture /> コンポーネントを使用し、artDirectives プロパティを活用することで、デバイスごとに「異なるトリミング（クロップ）」の画像を出し分けることが可能になる 26。
+実装例:
+* PC: アスペクト比 16:9 の広角画像
+* SP: アスペクト比 1:1 の接写画像
+これにより、モバイルユーザーは不要なピクセルデータをダウンロードする必要がなくなり、LCP（Largest Contentful Paint）が大幅に改善される。
+6.3 LQIP（Low Quality Image Placeholders）とスケルトンローディング
+画像の読み込み中に空白が表示されることは、UX上のストレス要因となる。これを防ぐために、LQIP（低品質画像プレースホルダー）を導入する。画像の読み込みが完了するまで、極めて軽量（1KB以下）なぼかし画像や、画像から抽出した主要色（ドミナントカラー）を表示しておく技術である 27。
+また、動的に読み込まれるコンテンツに対しては、JavaScriptのスピナーではなく、CSSのみで実装された「スケルトンローダー（シマーエフェクト）」を使用する。コンテンツの形状を模したグレーのボックスが明滅することで、ユーザーの体感待機時間を短縮し、レイアウトシフト（CLS）を物理的に防ぐことができる 28。
+________________
+7. タイポグラフィと日本語Webフォントの最適化
+日本語サイトにおいて、Webフォントの容量はパフォーマンスの最大のボトルネックの一つである。これを解決するために、最新のCSS仕様を活用する。
+7.1 Variable Fonts（可変フォント）の活用
+従来のフォントファイルは、太さ（Weight）ごとに個別のファイル（Regular, Bold, ExtraBoldなど）を読み込む必要があった。Variable Fonts は、単一のファイル内で太さや幅、傾きなどを自由に補間できる技術である 30。これにより、HTTPリクエスト数を削減しつつ、デザインの自由度を高めることができる。Astroの @fontsource-variable パッケージを使用することで、Google Fontsなどの最適化された可変フォントを簡単にセルフホストできる 31。
+7.2 size-adjust によるCLSの完全排除
+Webフォントが読み込まれるまでの間、ブラウザはシステムフォント（代替フォント）を表示するが、この二つのフォントは文字幅や高さが異なるため、切り替わりの瞬間に文章の行送りが変わり、レイアウトがガクッとずれる現象（CLS）が発生する。これは特に日本語フォントで顕著である。
+CSS size-adjust プロパティを使用することで、代替フォントのサイズを数学的に調整し、Webフォントのメトリクス（文字幅、アセンダー、ディセンダー）に強制的に一致させることができる 32。
+
+
+CSS
+
+
+
+
+@font-face {
+ font-family: 'Fallback Sans';
+ src: local('Helvetica'), local('Arial');
+ size-adjust: 90.5%; /* Webフォントの幅に合わせて縮小 */
+ ascent-override: 95%; /* 高さの微調整 */
+}
+
+この技術により、フォント読み込み前後でのレイアウトのズレを物理的にゼロにすることができ、快適な読書体験が保証される。
+________________
+8. ページ遷移のUX革命：View Transitions API
+最後に、サイト全体の質感を一段階引き上げる技術として View Transitions API を推奨する。これは、従来のMPA（マルチページアプリケーション）でありながら、SPA（シングルページアプリケーション）のようなシームレスなページ遷移アニメーションを実現するブラウザネイティブのAPIである 34。
+8.1 永続的要素とモーフィング
+Astroの <ClientRouter /> (旧 View Transitions) を利用することで、ヘッダーやフッターなどの共通要素を再読み込みすることなく、コンテンツ部分のみをクロスフェードさせることができる。さらに、Bento Grid内のサムネイル画像をクリックした際、その画像が拡大しながら次のページの詳細画像へと滑らかに変形（モーフ）するような演出も、CSSのみで定義可能となる 34。
+8.2 ダークモード切り替えの演出
+ダークモードの実装においても、View Transitionsは威力を発揮する。テーマ切り替えボタンを押した瞬間、円形のクリップパスが拡大して画面全体がダークテーマに切り替わるような、アプリライクな演出が可能となる。また、FOUC（Flash of Unstyled Content：一瞬白画面が表示される現象）を防ぐために、<head> 内でレンダリング前にテーマを適用するスクリプトをインラインで配置することがベストプラクティスとされている 36。
+________________
+9. 結論：軽量化された「豊かさ」への到達
+momo1105.com のUI改善に向けたリサーチの結果、2025年のトレンドは「装飾の排除」ではなく、「装飾のコスト（重さ）の排除」にあることが明らかになった。
+Bento Gridによる構造的な整理、Scroll-Driven Animationsによる没入感、Glassmorphismによる質感、そしてAstroとView Transitionsによるアプリのような操作感。これらすべては、JavaScriptのメインスレッドを圧迫することなく、CSSとブラウザの最適化機能を最大限に活用することで実現可能である。
+推奨される実装ステップは以下の通りである：
+1. Astroへの移行: 基盤を軽量化し、画像のArt Directionと最適化を自動化する。
+2. Bento Gridの構築: CSS GridとContainer Queriesを用い、あらゆるデバイスで破綻しないモジュールレイアウトを設計する。
+3. ネイティブアニメーションの導入: スクロール連動や視差効果をCSSのみで実装し、JS依存を排除する。
+4. フォントとアセットのチューニング: size-adjust とAVIF/WebPを徹底し、読み込みの瞬間の不快感をゼロにする。
+これらの技術を統合することで、momo1105.com は美しさと速さを妥協なく両立させた、2025年のWeb標準を体現するサイトへと進化するであろう。
+________________
+データ比較と実装ガイド
+表1: アニメーション実装手法の比較 (2025年基準)
+機能
+	従来の手法 (非推奨)
+	推奨される手法 (2025 Modern)
+	パフォーマンスへの影響 (推奨手法)
+	スクロール連動
+	window.onscroll + JS計算
+	CSS animation-timeline: scroll()
+	極低: コンポジタースレッドで実行されるため、メインスレッドをブロックしない。
+	要素の出現検知
+	IntersectionObserver API (JS)
+	CSS animation-timeline: view()
+	極低: ブラウザエンジンが描画パイプライン内で処理するため高速。
+	パララックス
+	Parallax.js 等のライブラリ
+	CSS transform + scroll()
+	低: 高リフレッシュレートのディスプレイでも滑らかに動作する。
+	ページ遷移
+	React Router / Heavy Client Routing
+	View Transitions API (Native)
+	低: 外部ライブラリ不要で、ブラウザネイティブの補間機能を利用。
+	3Dホバー効果
+	Vanilla JS mousemove イベント
+	CSS transform: perspective()
+	中: イベントリスナーのオーバーヘッドを削減できる。
+	表2: 画像最適化マトリクス
+画像タイプ
+	推奨フォーマット
+	読み込み戦略
+	レンダリング/実装技術
+	ヒーロー/バナー
+	AVIF (Lossy, Q=80)
+	eager (優先度高)
+	<Picture /> での Art Direction (PC/SPで別画像を配信)
+	Bento Gridサムネイル
+	AVIF (Lossy, Q=60)
+	lazy (遅延読み込み)
+	標準的なレスポンシブ srcset + LQIP (ぼかしプレースホルダー)
+	UIアイコン
+	SVG (Inline)
+	N/A
+	インラインSVG (CSSでの色変更が可能、HTTPリクエスト削減)
+	背景テクスチャ
+	SVG (Tiled) / WebP
+	eager
+	CSS background-image + mix-blend-mode (極小ファイルサイズ)
+	ユーザー投稿画像
+	WebP (自動変換)
+	lazy
+	Astro getImage() による動的最適化とサイズ生成
+	表3: Glassmorphism アクセシビリティ・チェックリスト
+レイヤー階層
+	CSS プロパティ例
+	目的
+	アクセシビリティ上の利点
+	1. 背景ぼかし
+	backdrop-filter: blur(16px)
+	すりガラスの質感表現
+	装飾的役割（これだけでは視認性確保不可）。
+	2. ティントオーバーレイ
+	bg: rgba(255,255,255, 0.6)
+	背景の明度調整
+	必須: 暗い背景画像の上でも文字が読めるようコントラストを確保する。
+	3. 境界線 (Border)
+	border: 1px solid rgba(255,255,255,0.3)
+	エッジの定義
+	高: ロービジョン（弱視）ユーザーがUIの境界を認識しやすくなる。
+	4. ドロップシャドウ
+	box-shadow: 0 4px 30px rgba(0,0,0,0.1)
+	浮遊感と深度
+	中: 背景との分離を強調し、階層構造を明確にする。
+	5. テキストシャドウ
+	text-shadow: 0 1px 0 rgba(255,255,255,0.4)
+	フォントの鮮鋭化
+	高: ノイズのある背景上でも文字の輪郭を際立たせる。
+	引用文献
+1. Design Trends 2025: Glassmorphism, Neumorphism & Styles You Need to Know by Randall Carter - Contra, 12月 27, 2025にアクセス、 https://contra.com/p/PYkeMOc7-design-trends-2025-glassmorphism-neumorphism-and-styles-you-need-to-know
+2. The Best Web Design Trends of 2025 - Paddle Creative, 12月 27, 2025にアクセス、 https://www.paddlecreative.co.uk/blog/the-best-web-design-trends-of-2025
+3. How to Master Bento Grid Layouts for Stunning Websites in 2025, 12月 27, 2025にアクセス、 https://ecommercewebdesign.agency/how-to-master-bento-grid-layouts-for-stunning-websites-in-2025/
+4. Build a bento layout with CSS grid - iamsteve, 12月 27, 2025にアクセス、 https://iamsteve.me/blog/bento-layout-css-grid
+5. Let's Create a Bento Box Design Layout Using Modern CSS, 12月 27, 2025にアクセス、 https://www.codemotion.com/magazine/frontend/lets-create-a-bento-box-design-layout-using-modern-css/
+6. CSS 2025 Container queries and style queries in real projects | by Valentyn Yakymenko, 12月 27, 2025にアクセス、 https://medium.com/@vyakymenko/css-2025-container-queries-and-style-queries-in-real-projects-c38af5a13aa2
+7. CSS container queries - MDN Web Docs, 12月 27, 2025にアクセス、 https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries
+8. Container query card | Layout patterns - web.dev, 12月 27, 2025にアクセス、 https://web.dev/patterns/layout/container-query-card
+9. Container queries in Tailwind, 12月 27, 2025にアクセス、 https://www.protailwind.com/tips/container-queries-in-tailwind
+10. let's learn container queries and how to do them in tailwind. - DEV Community, 12月 27, 2025にアクセス、 https://dev.to/mr_mornin_star/lets-learn-container-queries-and-how-to-do-them-in-tailwind-27m5
+11. How I used Container Queries in Tailwind to prevent my cards from collapsing | by Saroj Bist, 12月 27, 2025にアクセス、 https://medium.com/@Saroj_bist/how-i-used-container-queries-in-tailwind-to-prevent-my-cards-from-collapsing-acc725d769af
+12. Scroll-driven animation timelines - CSS - MDN Web Docs, 12月 27, 2025にアクセス、 https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations/Timelines
+13. The Web Animation Performance Tier List - Motion Blog, 12月 27, 2025にアクセス、 https://motion.dev/blog/web-animation-performance-tier-list
+14. Pure CSS Parallax Effects: Creating Depth and Motion Without a Single Line of JavaScript, 12月 27, 2025にアクセス、 https://medium.com/@farihatulmaria/pure-css-parallax-effects-creating-depth-and-motion-without-a-single-line-of-javascript-f4ecc35c928e
+15. Parallax using scroll driven animations - DEV Community, 12月 27, 2025にアクセス、 https://dev.to/codingjlu/parallax-using-scroll-driven-animations-44o7
+16. A guide to Scroll-driven Animations with just CSS | WebKit, 12月 27, 2025にアクセス、 https://webkit.org/blog/17101/a-guide-to-scroll-driven-animations-with-just-css/
+17. Animate elements on scroll with Scroll-driven animations | CSS and UI, 12月 27, 2025にアクセス、 https://developer.chrome.com/docs/css-ui/scroll-driven-animations
+18. Show HN: CSS generator for a high-def glass effect - Hacker News, 12月 27, 2025にアクセス、 https://news.ycombinator.com/item?id=44445238
+19. Glassmorphism CSS Tutorial: Create Modern Frosted Glass Effects - - Exclusive Addons, 12月 27, 2025にアクセス、 https://exclusiveaddons.com/glassmorphism-css-tutorial/
+20. Glassmorphism CSS Generator | SquarePlanet - HYPE4.Academy, 12月 27, 2025にアクセス、 https://hype4.academy/tools/glassmorphism-generator
+21. Images - Astro Docs, 12月 27, 2025にアクセス、 https://docs.astro.build/en/guides/images/
+22. Astro 3 and Responsive Images - Scott Willsey, 12月 27, 2025にアクセス、 https://scottwillsey.com/astro-3-responsive-images/
+23. Front-end frameworks - Astro Docs, 12月 27, 2025にアクセス、 https://docs.astro.build/en/guides/framework-components/
+24. How to optimize images in Astro: A step-by-step guide | Uploadcare, 12月 27, 2025にアクセス、 https://uploadcare.com/blog/how-to-optimize-images-in-astro/
+25. 2025 Image Optimization Guide for SEO, Social Media & Performance, 12月 27, 2025にアクセス、 https://www.marketmymarket.com/2025-image-optimization-guide-for-seo-social-media-performance/
+26. Picture - Astro ImageTools Documentation, 12月 27, 2025にアクセス、 https://astro-imagetools-docs.vercel.app/en/components/Picture/
+27. Simple LQIP for Better Image Loading - Astro LQIP - NextGen JavaScript, 12月 27, 2025にアクセス、 https://next.jqueryscript.net/astro/lqip-better-image-loading/
+28. Skeleton Loading: Boost UX with Placeholder Magic | by Alhassan Mohammed | Medium, 12月 27, 2025にアクセス、 https://medium.com/@bigboss200535/skeleton-loading-boost-ux-with-placeholder-magic-07babac3f709
+29. Zero javascript progressive loading with Astro - Code hater blog, 12月 27, 2025にアクセス、 https://codehater.blog/articles/zero-js-progressive-loading/
+30. How to use variable fonts to reduce your font load significantly - CKEditor, 12月 27, 2025にアクセス、 https://ckeditor.com/blog/optimize-font-size-with-variable-fonts/
+31. Variable Fonts | Documentation - Fontsource, 12月 27, 2025にアクセス、 https://fontsource.org/docs/getting-started/variable
+32. size-adjust - CSS - MDN Web Docs, 12月 27, 2025にアクセス、 https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@font-face/size-adjust
+33. CSS size-adjust for @font-face | Articles - web.dev, 12月 27, 2025にアクセス、 https://web.dev/articles/css-size-adjust
+34. View transitions - Astro Docs, 12月 27, 2025にアクセス、 https://docs.astro.build/en/guides/view-transitions/
+35. Using viewtransition for dark mode in astro - Stack Overflow, 12月 27, 2025にアクセス、 https://stackoverflow.com/questions/77092920/using-viewtransition-for-dark-mode-in-astro
+36. Adding a Theme to Your Astro Project - OpenReplay Blog, 12月 27, 2025にアクセス、 https://blog.openreplay.com/adding-theme-astro-project/
+37. How to handle dark mode | Astro Tips, 12月 27, 2025にアクセス、 https://astro-tips.dev/recipes/dark-mode/

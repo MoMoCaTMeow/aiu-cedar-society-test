@@ -5,7 +5,7 @@ import BreadcrumbSchema from "../components/BreadcrumbSchema.astro";
 import Marquee from "../components/Marquee.astro";
 import { getPages, type SponsorItem } from "../library/microcms";
 
-// Fetch sponsors from Pages API
+// Fetch sponsors from Pages API (singleton endpoint with repeater field)
 let sponsors: SponsorItem[] = [];
 try {
     const pages = await getPages();

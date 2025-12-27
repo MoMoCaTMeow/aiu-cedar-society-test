@@ -1,15 +1,23 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import { getMembers } from "../../../library/microcms";
+import { getCollection } from "astro:content";
 import Breadcrumb from "../../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../../components/BreadcrumbSchema.astro";
 
 // Helper to get English content or fallback to Japanese
 const getContent = (en: string | undefined, ja: string) => en || ja;
 
-// Fetch members
-const response = await getMembers();
-const members = response.contents;
+// Fetch members using Content Layer API
+const allMembers = await getCollection("members");
+const members = allMembers.map((member) => ({
+    id: member.id,
+    name: member.data.name,
+    position: member.data.position,
+    year: member.data.year,
+    description: member.data.description,
+    status: member.data.status,
+    image: member.data.image,
+}));
 
 // Group members by status
 const getStatus = (member: any) => {

@@ -6,7 +6,7 @@ import FluidGradient from "../components/FluidGradient.astro";
 import SEO from "../components/SEO.astro";
 import SchemaOrganization from "../components/SchemaOrganization.astro";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import {
     getLangFromUrl,
     getLocalizedPath,
@@ -49,19 +49,18 @@ const isActive = (path: string) => {
 
 // Navigation labels based on language
 const nav = {
-    about: currentLang === "en" ? "About" : "About",
+    about: "About",
     aboutUs: currentLang === "en" ? "About Us" : "私たちについて",
     history: currentLang === "en" ? "History" : "設立の経緯",
     members: currentLang === "en" ? "Members" : "メンバー紹介",
-    events: currentLang === "en" ? "Events" : "Events",
+    events: "Events",
     upcoming: currentLang === "en" ? "Upcoming Events" : "今後の予定",
     past: currentLang === "en" ? "Past Lectures" : "過去の講演会",
-    media: currentLang === "en" ? "Media" : "メディア掲載",
-    faq: currentLang === "en" ? "FAQ" : "よくあるご質問",
-    sponsors: currentLang === "en" ? "Sponsors" : "協賛企業・パートナー",
+    media: "Media",
+    faq: "FAQ",
+    sponsors: "Sponsors",
     contact: "Contact",
-    speakerRequest:
-        currentLang === "en" ? "Request a Speaker" : "講演者リクエスト",
+    speakerRequest: "Request",
 };
 ---
 
@@ -81,8 +80,8 @@ const nav = {
         <!-- SEO Meta Tags -->
         <SEO {...seo} />
 
-        <!-- View Transitions for smooth page navigation -->
-        <ViewTransitions />
+        <!-- ClientRouter for smooth page navigation -->
+        <ClientRouter />
 
         <!-- DNS Prefetch for faster resolution -->
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
@@ -1453,7 +1452,7 @@ const nav = {
                             href={l("/speaker-request")}
                             class="nav-link typography-nav"
                             data-active={isActive("/speaker-request")}
-                            >Request</a
+                            >{nav.speakerRequest}</a
                         >
                     </nav>
 
@@ -1835,7 +1834,7 @@ const nav = {
                             href={l("/contact")}
                             class="mobile-menu-cta-secondary"
                         >
-                            {currentLang === "en" ? "Contact" : "お問い合わせ"}
+                            {nav.contact}
                         </a>
                     </div>
                 </div>
@@ -2338,15 +2337,11 @@ const nav = {
                 border-radius: 16px;
                 font-family: var(--font-geometric);
                 font-weight: 800;
-                letter-spacing: -0.01em;
                 text-decoration: none;
                 transition:
                     transform 180ms ease,
-                    border-color 180ms ease,
-                    box-shadow 180ms ease,
-                    background 180ms ease;
+                    box-shadow 180ms ease;
                 outline: none;
-            }
 
             .mobile-menu-cta-primary::before,
             .mobile-menu-cta-secondary::before {

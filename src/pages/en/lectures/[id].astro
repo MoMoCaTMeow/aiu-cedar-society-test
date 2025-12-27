@@ -1,6 +1,6 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import { getLectures } from "../../../library/microcms";
+import { getCollection, getEntry } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Breadcrumb from "../../../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../../../components/BreadcrumbSchema.astro";
@@ -13,8 +13,8 @@ const getContent = (item: any, field: string): string => {
 
 // Generate static paths for all lectures
 export const getStaticPaths = (async () => {
-    const response = await getLectures({ fields: ["id"] });
-    return response.contents.map((lecture) => ({
+    const lectures = await getCollection("lectures");
+    return lectures.map((lecture) => ({
         params: { id: lecture.id },
     }));
 }) satisfies GetStaticPaths;
@@ -26,28 +26,27 @@ if (!id) {
     return Astro.redirect("/en/404");
 }
 
-// Fetch the lecture data using filters
-const response = await getLectures({
-    filters: `id[equals]${id}`,
-    fields: [
-        "id",
-        "title",
-        "title_en",
-        "guest_name",
-        "guest_name_en",
-        "belonging",
-        "belonging_en",
-        "event_date",
-        "eyecatch",
-        "content",
-        "content_en",
-    ],
-});
-const lecture = response.contents[0];
+// Fetch the lecture data using Content Layer API
+const lectureEntry = await getEntry("lectures", id);
 
-if (!lecture) {
+if (!lectureEntry) {
     return Astro.redirect("/en/404");
 }
+
+// Map to expected structure (note: English fields may need to be added to schema)
+const lecture = {
+    id: lectureEntry.id,
+    title: lectureEntry.data.title,
+    title_en: (lectureEntry.data as any).title_en,
+    guest_name: lectureEntry.data.guest_name,
+    guest_name_en: (lectureEntry.data as any).guest_name_en,
+    belonging: lectureEntry.data.belonging,
+    belonging_en: (lectureEntry.data as any).belonging_en,
+    event_date: lectureEntry.data.event_date,
+    eyecatch: lectureEntry.data.eyecatch,
+    content: lectureEntry.data.content,
+    content_en: (lectureEntry.data as any).content_en,
+};
 
 // Get English content with fallback
 const title = getContent(lecture, "title");

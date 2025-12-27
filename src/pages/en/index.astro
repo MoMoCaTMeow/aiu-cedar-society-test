@@ -2,42 +2,43 @@
 import Layout from "../../layouts/Layout.astro";
 import Marquee from "../../components/Marquee.astro";
 import MagneticButton from "../../components/MagneticButton.astro";
-import { getLectures, getUpcomingEvents, getPages } from "../../library/microcms";
+import { getCollection } from "astro:content";
+import { getPages } from "../../library/microcms";
 import { useTranslations, formatDate, formatDateTime } from "../../i18n/utils";
 
 const lang = "en";
 const t = useTranslations(lang);
 
-// Fetch lectures (limit to 4 for homepage display)
-const response = await getLectures({
-    fields: [
-        "id",
-        "title",
-        "title_en",
-        "guest_name",
-        "belonging",
-        "belonging_en",
-        "event_date",
-        "description",
-        "description_en",
-        "eyecatch",
-    ],
-    limit: 100,
-});
+// Fetch lectures using Content Layer API
+const allLectures = await getCollection("lectures");
 
 // Sort by event_date (newest first) and take top 4
-const lectures = response.contents
+const lectures = allLectures
+    .map((lecture) => ({
+        id: lecture.id,
+        title: lecture.data.title,
+        guest_name: lecture.data.guest_name,
+        belonging: lecture.data.belonging,
+        event_date: lecture.data.event_date,
+        eyecatch: lecture.data.eyecatch,
+    }))
     .sort(
         (a, b) =>
             new Date(b.event_date).getTime() - new Date(a.event_date).getTime(),
     )
     .slice(0, 4);
 
-// Fetch upcoming events
-const upcomingResponse = await getUpcomingEvents();
-const upcomingEvents = upcomingResponse.contents;
+// Fetch upcoming events using Content Layer API
+const allUpcomingEvents = await getCollection("upcoming_events");
+const upcomingEvents = allUpcomingEvents.map((event) => ({
+    id: event.id,
+    title: event.data.title,
+    event_date: event.data.event_date,
+    description: event.data.description,
+    location: event.data.location,
+}));
 
-// Fetch sponsors for marquee
+// Fetch sponsors for marquee (pages is singleton, keep using legacy method)
 let sponsors: Array<{ name: string; logo?: string; url?: string }> = [];
 try {
     const pages = await getPages();

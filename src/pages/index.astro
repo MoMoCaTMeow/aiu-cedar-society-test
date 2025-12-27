@@ -2,35 +2,40 @@
 import Layout from "../layouts/Layout.astro";
 import Marquee from "../components/Marquee.astro";
 import MagneticButton from "../components/MagneticButton.astro";
-import { getLectures, getUpcomingEvents, getPages } from "../library/microcms";
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import { getPages } from "../library/microcms";
 
-// Fetch lectures (limit to 4 for homepage display)
-const response = await getLectures({
-    fields: [
-        "id",
-        "title",
-        "guest_name",
-        "belonging",
-        "event_date",
-        "description",
-        "eyecatch",
-    ],
-    limit: 100,
-});
+// Fetch lectures using Content Layer API
+const allLectures = await getCollection("lectures");
 
 // Sort by event_date (newest first) and take top 4
-const lectures = response.contents
+const lectures = allLectures
+    .map((lecture) => ({
+        id: lecture.id,
+        title: lecture.data.title,
+        guest_name: lecture.data.guest_name,
+        belonging: lecture.data.belonging,
+        event_date: lecture.data.event_date,
+        eyecatch: lecture.data.eyecatch,
+    }))
     .sort(
         (a, b) =>
             new Date(b.event_date).getTime() - new Date(a.event_date).getTime(),
     )
     .slice(0, 4);
 
-// Fetch upcoming events
-const upcomingResponse = await getUpcomingEvents();
-const upcomingEvents = upcomingResponse.contents;
+// Fetch upcoming events using Content Layer API
+const allUpcomingEvents = await getCollection("upcoming_events");
+const upcomingEvents = allUpcomingEvents.map((event) => ({
+    id: event.id,
+    title: event.data.title,
+    event_date: event.data.event_date,
+    description: event.data.description,
+    location: event.data.location,
+}));
 
-// Fetch sponsors for marquee
+// Fetch sponsors for marquee (pages is singleton, keep using legacy method)
 let sponsors: Array<{ name: string; logo?: string; url?: string }> = [];
 try {
     const pages = await getPages();
@@ -307,40 +312,26 @@ const seo = {
                             class="lecture-card block group card-tilt"
                         >
                             <div
-                                class={`bg-white/90 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden ring-1 ring-gray-100 group-hover:ring-[#006837]/30 hover-lift glass-card scroll-reveal scroll-reveal-delay-${index + 1}`}
+                                class={`lecture-card-wrapper bg-white/90 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden ring-1 ring-gray-100 group-hover:ring-[#006837]/30 hover-lift glass-card scroll-reveal scroll-reveal-delay-${index + 1}`}
                                 data-animate
                                 data-animate-delay={index + 1}
                             >
-                                <div class="flex flex-row gap-0">
+                                <div class="lecture-card-inner flex flex-row gap-0">
                                     {/* Image - モバイルでも横並び、サイズを小さく */}
                                     <div class="w-24 sm:w-32 md:w-48 flex-shrink-0 relative overflow-hidden bg-gray-100">
                                         <div class="aspect-[3/4] md:aspect-[210/297]">
                                             {lecture.eyecatch ? (
-                                                <img
-                                                    src={`${lecture.eyecatch.url}?w=192&fm=webp&q=60`}
-                                                    srcset={`
-                                                        ${lecture.eyecatch.url}?w=96&fm=webp&q=60 96w,
-                                                        ${lecture.eyecatch.url}?w=128&fm=webp&q=60 128w,
-                                                        ${lecture.eyecatch.url}?w=192&fm=webp&q=60 192w,
-                                                        ${lecture.eyecatch.url}?w=256&fm=webp&q=60 256w,
-                                                        ${lecture.eyecatch.url}?w=384&fm=webp&q=60 384w
-                                                    `}
-                                                    sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 192px"
+                                                <Image
+                                                    src={lecture.eyecatch.url}
+                                                    width={lecture.eyecatch.width}
+                                                    height={lecture.eyecatch.height}
                                                     alt={lecture.title}
-                                                    width="192"
-                                                    height="256"
-                                                    loading={
-                                                        index < 2
-                                                            ? "eager"
-                                                            : "lazy"
-                                                    }
-                                                    fetchpriority={
-                                                        index === 0
-                                                            ? "high"
-                                                            : "auto"
-                                                    }
-                                                    decoding="async"
+                                                    format="avif"
+                                                    quality="mid"
+                                                    loading={index < 2 ? "eager" : "lazy"}
+                                                    fetchpriority={index === 0 ? "high" : "auto"}
                                                     class="w-full h-full object-cover img-organic-hover"
+                                                    sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 192px"
                                                 />
                                             ) : (
                                                 <div class="w-full h-full bg-gradient-to-br from-[#006837] to-[#005028] flex items-center justify-center">
@@ -638,6 +629,33 @@ const seo = {
             animation-duration: 0.01ms !important;
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* Container Queries for Lecture Cards */
+    /* Parent container defines the query context */
+    .lecture-card-wrapper {
+        container-type: inline-size;
+        container-name: lecture-card;
+    }
+
+    /* Default: vertical layout (mobile) */
+    .lecture-card-inner {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* When container is wide enough, switch to horizontal layout */
+    @container lecture-card (min-width: 400px) {
+        .lecture-card-inner {
+            flex-direction: row;
+        }
+    }
+
+    /* Adjust image size based on container width */
+    @container lecture-card (min-width: 500px) {
+        .lecture-card-inner > div:first-child {
+            width: 40%;
         }
     }
 </style>

@@ -4,7 +4,7 @@ import Breadcrumb from "../components/Breadcrumb.astro";
 import BreadcrumbSchema from "../components/BreadcrumbSchema.astro";
 import { getPages, type FAQItem } from "../library/microcms";
 
-// Fetch FAQs from Pages API
+// Fetch FAQs from Pages API (singleton endpoint with repeater field)
 let faqs: FAQItem[] = [];
 try {
     const pages = await getPages();
